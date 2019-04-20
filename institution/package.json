@@ -1,0 +1,20 @@
+{
+  "name": "institution",
+  "version": "1.0.0",
+  "description": "A microservice to manage college related features",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Thiago R Bassetto",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "pg": "^7.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0"
+  }
+}
