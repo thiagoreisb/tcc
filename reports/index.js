@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 
 // routes
 app.get('/', (req, res) => {
-    res.send('Welcome to the Institution microservice!');
+    res.send('Welcome to the Reports microservice!');
 });
 
 // start server on port 3000

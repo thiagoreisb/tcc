@@ -1,0 +1,16 @@
+{
+  "name": "reports",
+  "version": "1.0.0",
+  "description": "A microservice to manage the reports from the system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Thiago R Bassetto",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "pg": "^7.10.0"
+  }
+}
