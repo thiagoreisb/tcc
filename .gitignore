@@ -3,3 +3,4 @@
 **/.eslintrc
 **/npm-debug.log
 **/.env
+docker-compose.yml

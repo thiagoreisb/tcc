@@ -4,6 +4,7 @@
   "description": "A microservice to manage the reports from the system",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Thiago R Bassetto",
@@ -13,5 +14,8 @@
     "dotenv": "^7.0.0",
     "express": "^4.16.4",
     "pg": "^7.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0"
   }
 }
