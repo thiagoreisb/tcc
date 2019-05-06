@@ -1,8 +1,9 @@
+require('dotenv').config();
 'use strict';
 
 const express = require('express');
 const bodyParser = require('body-parser');
-//const pg = require('pg');
+const db = require('./api/db.js');
 const app = new express();
 
 // register JSON parser middlewear
@@ -11,6 +12,19 @@ app.use(bodyParser.json());
 // routes
 app.get('/', (req, res) => {
     res.send('Welcome to the Monitoring microservice!');
+});
+
+app.get('/db', (req, res) => {
+    db.exec(
+        'select * from contract;',
+        [],
+        (err, result) => {
+            if (err) {
+                res.send('Cannot retrieve data! ' + err);
+            }
+            res.send(result.rows);
+        }
+    );
 });
 
 // start server on port 3000

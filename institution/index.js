@@ -1,19 +1,10 @@
 require('dotenv').config();
 'use strict';
 
-
 const express = require('express');
 const bodyParser = require('body-parser');
-const pg = require('pg');
-
+const db = require('./api/db.js');
 const app = new express();
-const pool = new pg.Pool({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASS,
-    port: process.env.DB_PORT
-});
 
 // register JSON parser middlewear
 app.use(bodyParser.json());
@@ -23,19 +14,18 @@ app.get('/', (req, res) => {
     res.send('Welcome to the Institution microservice!');
 });
 
+// Database connection test
 app.get('/db', (req, res) => {
-    pool.connect(function (err, client, done) {
-        if (err) {
-            res.send('Cannot connect to db! ' + err);
-        }
-        client.query('SELECT * FROM person', function (err, result) {
-            done();
+    db.exec(
+        'select table_schema, table_name from information_schema.tables where table_schema=\'public\';',
+        [],
+        (err, result) => {
             if (err) {
                 res.send('Cannot retrieve data! ' + err);
             }
             res.send(result.rows);
-        })
-    });
+        }
+    );
 });
 
 // start server on port 3000
