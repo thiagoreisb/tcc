@@ -1,10 +1,31 @@
 'use strict';
 
+const table = 'subject';
+
 class Subject {
-    constructor(id, name, department_id) {
-        this.id = id;
-        this.name = name;
-        this.department_id = department_id;
+    /**
+     * Instantiates this class
+     * @function
+     * @param {JSON} Subject 
+     */
+    constructor(subject) {
+        this.id = subject.id;
+        this.name = subject.name;
+        this.department_id = subject.department_id;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    static getTable() {
+        return table;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    getTable(){
+        return table;
     }
 }
 

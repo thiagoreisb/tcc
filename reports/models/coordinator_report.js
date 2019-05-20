@@ -1,19 +1,32 @@
 'use strict';
 
+const table = 'coordinator_report';
+
 class  CoordinatorReport {
     /**
-     * Instantiate this class
+     * Instantiates this class
      * @function
-     * @param {int} advisor_id 
-     * @param {int} monitor_id 
-     * @param {int} coordinator_id 
-     * @param {boolean} renew 
+     * @param {JSON} CoordinatorReport
      */
-    constructor(advisor_id, monitor_id, coordinator_id, renew) {
-        this.advisor_id = advisor_id;
-        this.monitor_id = monitor_id;
-        this.coordinator_id = coordinator_id;
-        this.renew = renew;
+    constructor(coordinator_report) {
+        this.advisor_id = coordinator_report.advisor_id;
+        this.monitor_id = coordinator_report.monitor_id;
+        this.coordinator_id = coordinator_report.coordinator_id;
+        this.renew = coordinator_report.renew;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    static getTable() {
+        return table;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    getTable(){
+        return table;
     }
 }
 

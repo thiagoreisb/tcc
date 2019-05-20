@@ -1,22 +1,33 @@
 'use strict';
 
+const table = 'coordinator';
+
 class Coordinator {
     /**
-     * Instantiate this class
-     * @param {int} id 
-     * @param {string} suggestions 
-     * @param {string} activities 
-     * @param {string} observation 
-     * @param {Date} sent 
-     * @param {int} person_id 
+     * Instantiates this class
+     * @param {JSON} Coordinator
      */
-    constructor(id, suggestions, activities, observation, sent, person_id) {
-        this.id = id;
-        this.suggestions = suggestions;
-        this.activities = activities;
-        this.observation = observation;
-        this.sent = sent;
-        this.person_id = person_id;
+    constructor(coordinator) {
+        this.id = coordinator.id;
+        this.suggestions = coordinator.suggestions;
+        this.activities = coordinator.activities;
+        this.observation = coordinator.observation;
+        this.sent = coordinator.sent;
+        this.person_id = coordinator.person_id;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    static getTable() {
+        return table;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    getTable(){
+        return table;
     }
 }
 

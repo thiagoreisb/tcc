@@ -1,38 +1,37 @@
 'use strict';
 
+const table = 'schedule';
+
 class Schedule {
     /**
-     * Instantiate this class
+     * Instantiates this class
      * @function
-     * @param {int} id 
-     * @param {int} week_day 
-     * @param {string} start 
-     * @param {string} end 
-     * @param {string} observation 
-     * @param {int} situation 
-     * @param {int} activity 
-     * @param {int} class_id 
-     * @param {int} contract_id 
+     * @param {JSON} Schedule
      */
-    constructor(
-        id,
-        week_day,
-        start,
-        end,
-        observation,
-        situation,
-        activity,
-        class_id,
-        contract_id) {
-        this.id = id;
-        this.week_day = week_day;
-        this.start = start;
-        this.end = end;
-        this.observation = observation;
-        this.situation = situation;
-        this.activity = activity;
-        this.class_id = class_id;
-        this.contract_id = contract_id;
+    constructor(schedule) {
+        this.id = schedule.id;
+        this.week_day = schedule.week_day;
+        this.start = schedule.start;
+        this.end = schedule.end;
+        this.observation = schedule.observation;
+        this.situation = schedule.situation;
+        this.activity = schedule.activity;
+        this.class_id = schedule.class_id;
+        this.contract_id = schedule.contract_id;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    static getTable() {
+        return table;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    getTable(){
+        return table;
     }
 }
 

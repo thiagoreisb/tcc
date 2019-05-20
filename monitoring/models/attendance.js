@@ -1,29 +1,34 @@
 'use strict';
 
+const table = 'attendance';
+
 class Attendance {
     /**
-     * Instantiate this class
+     * Instantiates this class
      * @function
-     * @param {int} id 
-     * @param {string} start 
-     * @param {string} end 
-     * @param {string} observation 
-     * @param {int} frequency_id 
-     * @param {int} person_id 
+     * @param {JSON} Attendance  
      */
-    constructor(
-        id,
-        start,
-        end,
-        observation,
-        frequency_id,
-        person_id) {
-        this.id = id;
-        this.start = start;
-        this.end = end;
-        this.observation = observation;
-        this.frequency_id = frequency_id;
-        this.person_id = person_id;
+    constructor(attendance) {
+        this.id = attendance.id;
+        this.start = attendance.start;
+        this.end = attendance.end;
+        this.observation = attendance.observation;
+        this.frequency_id = attendance.frequency_id;
+        this.person_id = attendance.person_id;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    static getTable() {
+        return table;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    getTable(){
+        return table;
     }
 }
 

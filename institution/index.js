@@ -3,15 +3,17 @@ require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const db = require('./repository/db.js');
+const Crud = require('./repository/crud');
+
+const crud = new Crud();
 const app = new express();
 
 // register JSON parser middlewear
 app.use(bodyParser.json());
 
 // routes
-require('./routes/testRoutes')(app, db);
-require('./routes/personRoutes')(app, db);
+require('./routes/testRoutes')(app);
+require('./routes/personRoutes')(app, crud);
 
 // start server on port 3000 locally
 app.listen(process.env.PORT || 3000, () => {

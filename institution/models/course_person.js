@@ -1,11 +1,32 @@
 'use strict';
 
+const table = 'course_person';
+
 class CoursePerson {
-    constructor(id_course, id_person, start_date, end_date) {
-        this.id_course = id_course;
-        this.id_person = id_person;
-        this.start_date = start_date;
-        this.end_date = end_date;
+    /**
+     * Instantiaties this class
+     * @function
+     * @param {JSON} CoursePerson 
+     */
+    constructor(course_person) {
+        this.id_course = course_person.id_course;
+        this.id_person = course_person.id_person;
+        this.start_date = course_person.start_date;
+        this.end_date = course_person.end_date;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    static getTable() {
+        return table;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    getTable(){
+        return table;
     }
 }
 

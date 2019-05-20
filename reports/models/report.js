@@ -1,57 +1,44 @@
 'use strict';
 
+const table = 'report';
+
 class Report {
 
     /**
-     * Instantiate this class
+     * Instantiates this class
      * @function
-     * @param {int} id 
-     * @param {string} suggestions 
-     * @param {string} activities 
-     * @param {string} observation 
-     * @param {int} evaluation 
-     * @param {boolean} renew 
-     * @param {int} responsability 
-     * @param {int} planning 
-     * @param {int} criativity 
-     * @param {int} relationship 
-     * @param {int} autodevelopment 
-     * @param {int} autocritics 
-     * @param {boolean} sent 
-     * @param {int} person_id 
-     * @param {int} contract_id 
+     * @param {JSON} Report
      */
-    constructor(
-        id,
-        suggestions,
-        activities,
-        observation,
-        evaluation,
-        renew,
-        responsability,
-        planning,
-        criativity,
-        relationship,
-        autodevelopment,
-        autocritics,
-        sent,
-        person_id,
-        contract_id) {
-        this.id = id;
-        this.suggestions = suggestions,
-        this.activities = activities,
-        this.observation = observation,
-        this.evaluation = evaluation,
-        this.renew = renew,
-        this.responsability = responsability,
-        this.planning = planning,
-        this.criativity = criativity,
-        this.relationship = relationship,
-        this.autodevelopment = autodevelopment,
-        this.autocritics = autocritics,
-        this.sent = sent,
-        this.person_id = person_id,
-        this.contract_id = contract_id;
+    constructor(report) {
+        this.id = report.id;
+        this.suggestions = report.suggestions,
+        this.activities = report.activities,
+        this.observation = report.observation,
+        this.evaluation = report.evaluation,
+        this.renew = report.renew,
+        this.responsability = report.responsability,
+        this.planning = report.planning,
+        this.criativity = report.criativity,
+        this.relationship = report.relationship,
+        this.autodevelopment = report.autodevelopment,
+        this.autocritics = report.autocritics,
+        this.sent = report.sent,
+        this.person_id = report.person_id,
+        this.contract_id = report.contract_id;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    static getTable() {
+        return table;
+    }
+
+    /**
+     * Returns the table related to this model
+     */
+    getTable(){
+        return table;
     }
 }
 

@@ -1,30 +1,29 @@
 'use strict';
 
 const Router = require('express');
-//const personRepo = require('../repository/personRepository');
+const Person = require('../models/person');
 
-const getPersonRoutes = (app, db) => {
+const getPersonRoutes = (app, crud) => {
     const router = new Router();
 
     router
         .get('/all', (req, res) => {
-            db.exec(
-                'select * from person;',
-                [],
-                (data) => res.json(data)
-            );
+            crud.getAll(Person, (data) => res.json(data));
         })
         .get('/get/:id', (req, res) => {
-            db.exec(
-                'select * from person where id = $1;',
-                [parseInt(req.params.id)],
-                (data) => res.json(data)
-            );
+            crud.getById(
+                Person,
+                req.params,
+                (data) => res.json(data));
         })
         .post('/save', (req, res) => {
-            // const person = req.body;
-            // const result = personRepo.save(person);
-            res.send('todo');
+            crud.saveNew(new Person(req.body), (data) => res.send(data));
+        })
+        .put('/update', (req, res) => {
+            crud.update(new Person(req.body), (data) => res.send(data));
+        })
+        .delete('/delete', (req, res) => {
+            crud.remove(new Person(req.body), (data) => res.send(data));
         });
     
     app.use('/person', router);
