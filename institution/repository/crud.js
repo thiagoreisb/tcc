@@ -53,16 +53,11 @@ class Crud {
          */
         propsArray.forEach(
             function(val) {
-                props += val + ',';
-
                 if (val !== 'id') {
+                    props += val + ',';
                     insert += '$' + count + ',';
                     count++;
                     newValues.push(newRecord[val]);
-                }
-                else {
-                    // Adds a search for an available id
-                    insert += '(select max(id) + 1 from ' + table + '),';
                 }
             }
         );
@@ -72,8 +67,7 @@ class Crud {
         insert = insert.substr(0, insert.length - 1);
 
         // Constructs the query
-        let query = 'insert into ' + table 
-            + ' (' + props + ') values (' + insert + ');';
+        let query = `insert into ${table} (${props}) values (${insert});`;
         
         // Executes the query with the proper values
         db.exec(query, newValues, cb);
@@ -112,9 +106,7 @@ class Crud {
         newValues.push(entity['id']);
 
         // Constructs the query
-        let query = 'update ' + table
-            + ' set ' + update
-            + ' where id = $' + count + ';';
+        let query = `update ${table} set ${update} where id = $${count};`;
             
         // Executes the query with the proper values
         db.exec(query, newValues, cb);
@@ -129,7 +121,7 @@ class Crud {
     remove(entity, cb) {
         // Executes the query with the proper values
         db.exec(
-            'delete from ' + entity.getTable() + ' where id = $1;',
+            `delete from ${entity.getTable()} where id = $1;`,
             [entity['id']],
             cb);
     }
