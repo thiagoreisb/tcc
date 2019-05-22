@@ -1,16 +1,16 @@
 'use strict';
 
-const table = 'class';
+const table = 'classroom';
 
-class Class {
+class Classroom {
     /**
      * Instantiates this class
      * @function
-     * @param {JSON} Class 
+     * @param {JSON} Classroom 
      */
-    constructor(classe) {
-        this.id = classe.id;
-        this.name = classe.name;
+    constructor(classroom) {
+        this.id = classroom.id;
+        this.name = classroom.name;
     }
 
     /**
@@ -28,4 +28,4 @@ class Class {
     }
 }
 
-module.exports = Class;
+module.exports = Classroom;

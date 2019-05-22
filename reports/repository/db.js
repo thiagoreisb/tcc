@@ -27,6 +27,7 @@ class DB {
                     console.log('Node.js error: ' + error.message);
                 }
                 process.exit(0);
+                /* eslint-enable */
             });
     }
 

@@ -3,24 +3,22 @@ require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const db = require('./repository/db.js');
+const Crud = require('./repository/crud');
+
+const crud = new Crud();
 const app = new express();
 
 // register JSON parser middlewear
 app.use(bodyParser.json());
 
 // routes
-app.get('/', (req, res) => {
-    res.send({'status':'Welcome to the Monitoring microservice!'});
-});
-
-app.get('/db', (req, res) => {
-    db.exec(
-        'select * from contract;',
-        [],
-        (data) => res.json(data)
-    );
-});
+require('./routes/testRoutes')(app);
+require('./routes/advisorHistoryRoutes')(app, crud);
+require('./routes/attendanceRoutes')(app, crud);
+require('./routes/contractRoutes')(app, crud);
+require('./routes/frequencyRoutes')(app, crud);
+require('./routes/monitorHistoryRoutes')(app, crud);
+require('./routes/scheduleRoutes')(app, crud);
 
 // start server on port 3000 locally
 app.listen(process.env.PORT || 3000, () => {
