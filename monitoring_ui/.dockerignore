@@ -1,0 +1,5 @@
+.env
+.eslintignore
+.eslintrc
+node_modules/
+npm-debug.log
