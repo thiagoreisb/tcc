@@ -1,4 +1,4 @@
-# monitoring_ui
+# web
 
 ## Project setup
 ```

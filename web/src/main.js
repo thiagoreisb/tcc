@@ -1,12 +1,8 @@
-/* eslint-disable */
-/// Vue
 import Vue from 'vue'
-import Login from './Login.vue'
+import App from './App.vue'
+import router from './router'
 
-/// Firebase
 var firebase = require('firebase');
-//var firebase = require('firebase/app');
-var firebaseui = require('firebaseui');
 
 // Web app's Firebase configuration
 var firebaseConfig = {
@@ -24,5 +20,8 @@ firebase.initializeApp(firebaseConfig);
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(Login),
+  router,
+  render: function(h) {
+    return h(App, {props: {serverData: firebase}});
+  }
 }).$mount('#app')
