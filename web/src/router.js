@@ -1,13 +1,19 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import firebase from 'firebase'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import Dashboard from './views/Dashboard.vue'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
+    {
+      // redirects to the specified page every non-existent path
+      path: '*',
+      redirect: '/'
+    },
     {
       path: '/',
       name: 'home',
@@ -20,8 +26,11 @@ export default new Router({
     },
     {
       path: '/app',
-      name: 'dashboard',
-      component: Dashboard
+      name: 'app',
+      component: Dashboard,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/about',
@@ -33,3 +42,14 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const currentUser = firebase.auth().currentUser;
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
+  if (requiresAuth && !currentUser) next('login');
+  else if (!requiresAuth && currentUser) next('app');
+  else next();
+});
+
+export default router;

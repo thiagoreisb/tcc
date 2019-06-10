@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import router from '../router'
+
 export default {
   name: 'login',
   components: {},
@@ -59,8 +61,7 @@ export default {
         .signInWithEmailAndPassword(this.userEmail, this.userPassword)
         .then(
           function(user) {
-            alert('Usuário logado!');
-            //window.location.href = '/monitoria';
+            router.replace('app');
           },
           function(error) {
             var errorCode = error.code;
@@ -68,15 +69,6 @@ export default {
             alert('Erro ' + errorCode + ': ' + errorMessage);
           }
         );
-    },
-    signOut: function() {
-      this.firebase.auth().signOut().then(function() {
-        alert('Deslogado com sucesso!');
-      }).catch(function(error) {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        alert('Erro ' + errorCode + ': ' + errorMessage);
-      });
     }
   }
 }

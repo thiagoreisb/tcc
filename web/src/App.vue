@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <div id="nav" v-if="this.$route.path !== '/app'">
       <router-link to="/">Home</router-link> |
       <router-link to="/login">Login</router-link> |
       <router-link to="/about">Sobre</router-link>
@@ -10,6 +10,8 @@
 </template>
 
 <script>
+import route from './router'
+
 export default {
   props: {
     serverData: Object
