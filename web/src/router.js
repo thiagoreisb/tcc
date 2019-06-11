@@ -4,6 +4,10 @@ import firebase from 'firebase'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import Dashboard from './views/Dashboard.vue'
+import Attendance from './components/Attendance.vue'
+import Contract from './components/Contract.vue'
+import Report from './components/Report.vue'
+import Schedule from './components/Schedule.vue'
 
 Vue.use(Router)
 
@@ -28,6 +32,24 @@ const router = new Router({
       path: '/app',
       name: 'app',
       component: Dashboard,
+      children: [
+        {
+          path: 'monitoria',
+          component: Contract
+        },
+        {
+          path: 'atendimentos',
+          component: Attendance
+        },
+        {
+          path: 'relatorios',
+          component: Report
+        },
+        {
+          path: 'horarios',
+          component: Schedule
+        }
+      ],
       meta: {
         requiresAuth: true
       }

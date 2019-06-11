@@ -1,7 +1,14 @@
 <template>
   <div id="dashboard">
-    <h1>Dashboard</h1>
-    <button @click="signOut" class="btn btn-primary">Sair</button>
+    <div id="nav">
+      <router-link to="/app">Início</router-link> |
+      <router-link to="/app/monitoria">Monitoria</router-link> |
+      <router-link to="/app/horarios">Horários</router-link> |
+      <router-link to="/app/atendimentos">Atendimentos</router-link> |
+      <router-link to="/app/relatorios">Relatórios</router-link> |
+      <a @click="signOut" href="#">Sair</a>
+    </div>
+    <router-view :parentData="firebase"/>
   </div>
 </template>
 
