@@ -5,20 +5,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
-//import HelloWorld from '@/components/HelloWorld.vue'
-
 export default {
-  name: 'home',
-  components: {
-  },
-  props: {
-    parentData: Object
-  },
-  data() {
-    return {
-      firebase: this.parentData
-    }
-  }
+  name: 'home'
 }
 </script>

@@ -5,7 +5,7 @@
       <router-link to="/login">Login</router-link> |
       <router-link to="/about">Sobre</router-link>
     </div>
-    <router-view :parentData="firebase"/>
+    <router-view :parentData="firebase" :apiData="api"/>
   </div>
 </template>
 
@@ -14,11 +14,13 @@ import route from './router'
 
 export default {
   props: {
-    serverData: Object
+    serverData: Object,
+    apiController: Object
   },
   data() {
     return {
-      firebase: this.serverData
+      firebase: this.serverData,
+      api: this.apiController
     }
   }
 }

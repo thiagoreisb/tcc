@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import api from './controllers/apiController'
 
 var firebase = require('firebase');
 
@@ -26,7 +27,7 @@ firebase.auth().onAuthStateChanged(() => {
     app = new Vue({
       router,
       render: function(h) {
-        return h(App, {props: {serverData: firebase}});
+        return h(App, {props: {serverData: firebase, apiController: api}});
       }
     }).$mount('#app');
   }

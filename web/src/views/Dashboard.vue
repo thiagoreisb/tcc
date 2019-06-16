@@ -20,11 +20,13 @@ export default {
   components: {
   },
   props: {
-    parentData: Object
+    parentData: Object,
+    apiData: Object
   },
   data() {
     return {
-      firebase: this.parentData
+      firebase: this.parentData,
+      api: this.apiData
     }
   },
   methods: {
