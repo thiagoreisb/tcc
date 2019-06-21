@@ -1,8 +1,10 @@
+require('dotenv').config()
+
 'use strict';
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const axios = require('axios');
+const api = require('./controllers/apiController');
 
 const app = new express();
 
@@ -15,9 +17,8 @@ app.use(function(req, res, next) {
 
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-    res.send({'status':'Welcome to the API!'});
-});
+// routes
+require('./routes/generalRoutes')(app, api);
 
 app.listen(process.env.PORT || 3000, () => {
     console.log('Server up!');
