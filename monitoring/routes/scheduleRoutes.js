@@ -3,12 +3,15 @@
 const Router = require('express');
 const Schedule = require('../models/schedule');
 
-const getScheduleRoutes = (app, crud) => {
+const getScheduleRoutes = (app, crud, read) => {
     const router = new Router();
 
     router
         .get('/all', (req, res) => {
             crud.getAll(Schedule, (data) => res.json(data));
+        })
+        .get('/all/active', (req, res) => {
+            read.getScheduleFromMonitorings((data) => res.json(data));
         })
         .get('/get/:id', (req, res) => {
             crud.getById(

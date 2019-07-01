@@ -3,12 +3,15 @@
 const Router = require('express');
 const Contract = require('../models/contract');
 
-const getContractRoutes = (app, crud) => {
+const getContractRoutes = (app, crud, read) => {
     const router = new Router();
 
     router
         .get('/all', (req, res) => {
             crud.getAll(Contract, (data) => res.json(data));
+        })
+        .get('/all/open', (req, res) => {
+            read.getRegularMonitorings((data) => res.json(data));
         })
         .get('/get/:id', (req, res) => {
             crud.getById(
