@@ -7,7 +7,6 @@ class ApiController {
         this.institution = process.env.APP_INSTITUTION;
         this.monitoring = process.env.APP_MONITORING;
         this.reports = process.env.APP_REPORTS;
-        console.log(process.env.APP_MONITORING);
     }
 
     /**
@@ -16,8 +15,8 @@ class ApiController {
      * @param {function} cb Callback function
      * @param {function} err Callback error function
      */
-    getFromInstitution(resource, cb, err) {
-        req.get(this.institution, resource, cb, err);
+    getFromInstitution(resource) {
+        return req.get(this.institution, resource);
     }
 
     /**
@@ -26,8 +25,8 @@ class ApiController {
      * @param {function} cb Callback function
      * @param {function} err Callback error function
      */
-    getFromMonitoring(resource, cb, err) {
-        req.get(this.monitoring, resource, cb, err);
+    getFromMonitoring(resource) {
+        return req.get(this.monitoring, resource);
     }
 
     /**
@@ -36,8 +35,8 @@ class ApiController {
      * @param {function} cb Callback function
      * @param {function} err Callback error function
      */
-    getFromReports(resource, cb, err) {
-        req.get(this.reports, resource, cb, err);
+    getFromReports(resource) {
+        return req.get(this.reports, resource);
     }
 }
 

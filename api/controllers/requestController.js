@@ -5,14 +5,13 @@ const axios = require('axios');
 class RequestController {
     /**
      * Returns the response of GET resource
-     * @param {string} resource API resource
-     * @param {function} cb Callback function
-     * @param {function} err Callback error function
+     * @param {string} url API URL name
+     * @param {string} resource API resource name
      */
-    get(uri, resource, cb, err) {
-        axios.get(uri + resource)
-            .then((response) => cb(response.data))
-            .catch((error) => err(error));
+    get(url, resource) {
+        return axios.get(url + resource)
+            .then((response) => response.data)
+            .catch((error) => error);
     }
 }
 
