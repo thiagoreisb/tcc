@@ -4,10 +4,10 @@ import firebase from 'firebase'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import Dashboard from './views/Dashboard.vue'
-import Attendance from './components/Attendance.vue'
-import Contract from './components/Contract.vue'
-import Report from './components/Report.vue'
-import Schedule from './components/Schedule.vue'
+import Attendance from './pages/Attendance.vue'
+import Contract from './pages/Contract.vue'
+import Report from './pages/Report.vue'
+import Schedule from './pages/Schedule.vue'
 
 Vue.use(Router)
 
