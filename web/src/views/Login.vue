@@ -39,8 +39,6 @@
 </template>
 
 <script>
-import router from '../router'
-
 export default {
   name: 'login',
   components: {},
@@ -56,12 +54,15 @@ export default {
   },
   methods: {
     signIn: function() {
+      /// Get this reference
+      let _this = this;
+
       this.firebase
         .auth()
         .signInWithEmailAndPassword(this.userEmail, this.userPassword)
         .then(
           function(user) {
-            router.replace('app');
+            _this.$router.replace('app');
           },
           function(error) {
             var errorCode = error.code;

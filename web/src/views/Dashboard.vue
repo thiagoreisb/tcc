@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import router from '../router'
 import Classes from '../components/Classes'
 
 export default {
@@ -38,8 +37,11 @@ export default {
   },
   methods: {
     signOut: function() {
+      /// Get this reference
+      let _this = this;
+
       this.firebase.auth().signOut().then(function() {
-        router.replace('login');
+        _this.$router.replace('login');
       }).catch(function(error) {
         var errorCode = error.code;
         var errorMessage = error.message;

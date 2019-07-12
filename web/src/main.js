@@ -1,6 +1,7 @@
 import Vue from 'vue'
+import Router from 'vue-router'
 import App from './App.vue'
-import router from './router'
+//import router from './router'
 import api from './controllers/apiController'
 
 var firebase = require('firebase');
@@ -21,6 +22,9 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 Vue.config.productionTip = false
+Vue.use(Router);
+
+var router = require('./router')(Router, firebase);
 
 firebase.auth().onAuthStateChanged(() => {
   if (!app) {
