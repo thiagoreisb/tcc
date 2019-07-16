@@ -24,6 +24,23 @@ class MonitoringRead {
 
         db.exec(query,[REGULAR_SITUATION_NUMBER],cb);
     }
+
+    getMyMonitorings(id, allMonitoring, cb) {
+        let query =
+                'select c.*, m.person_id monitor_id, a.person_id advisor_id '
+            +   'from contract c '
+            +   'left join monitor_history m on c.id = m.contract_id '
+            +   'left join advisor_history a on c.id = a.contract_id  '
+            +   'where (m.person_id = $1 or a.person_id = $1) ';
+
+        let actual =
+                'and (CURRENT_DATE between c.start_date and c.end_date '
+            +   'or situation in (0, 1)) ';
+        
+        query += allMonitoring ? '' : actual;
+
+        db.exec(query,[id],cb);
+    }
 }
 
 module.exports = MonitoringRead;

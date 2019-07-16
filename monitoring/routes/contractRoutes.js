@@ -19,6 +19,13 @@ const getContractRoutes = (app, crud, read) => {
                 req.params,
                 (data) => res.json(data));
         })
+        .get('/all/my/:id', (req, res) => {
+            read.getMyMonitorings(req.params.id, true, (data) => res.json(data));
+        })
+        .get('/actual/my/:id', (req, res) => {
+            read.getMyMonitorings(req.params.id, false, (data) => res.json(data));
+        })
+
         .post('/save', (req, res) => {
             crud.saveNew(new Contract(req.body), (data) => res.send(data));
         })

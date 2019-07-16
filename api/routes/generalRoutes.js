@@ -38,6 +38,18 @@ const generalRoutes = (app, api) => {
             })
             .catch((err) => res.send(err));
     });
+
+    app.get('/monitoring/all/my/:id', (req, res) => {
+        api.getFromMonitoring('/contract/all/my/' + req.params.id)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
+
+    app.get('/monitoring/actual/my/:id', (req, res) => {
+        api.getFromMonitoring('/contract/actual/my/' + req.params.id)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
 };
 
 module.exports = generalRoutes;
