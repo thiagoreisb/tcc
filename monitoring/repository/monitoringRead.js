@@ -41,6 +41,25 @@ class MonitoringRead {
 
         db.exec(query,[id],cb);
     }
+
+    getScheduleByContractId(id, cb) {
+        let query = 'select * from schedule where contract_id = $1 ';
+
+        db.exec(query,[id],cb);
+    }
+
+    getActualSchedule(id, cb) {
+        let query =
+                'select s.* from schedule s '
+            +   'inner join contract c on c.id = s.contract_id '
+            +   'left join monitor_history m on c.id = m.contract_id '
+            +   'left join advisor_history a on c.id = a.contract_id  '
+            +   'where (m.person_id = $1 or a.person_id = $1) '
+            +   'and (CURRENT_DATE between c.start_date and c.end_date '
+            +   'or c.situation in (0, 1)) ';
+
+        db.exec(query,[id],cb);
+    }
 }
 
 module.exports = MonitoringRead;

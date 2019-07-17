@@ -50,6 +50,18 @@ const generalRoutes = (app, api) => {
             .then((data) => res.send(data))
             .catch((err) => res.send(err));
     });
+
+    app.get('/schedules/from/contract/:id', (req, res) => {
+        api.getFromMonitoring('/schedule/by/contract/' + req.params.id)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
+
+    app.get('/schedules/from/person/:id', (req, res) => {
+        api.getFromMonitoring('/schedule/by/person/' + req.params.id)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
 };
 
 module.exports = generalRoutes;

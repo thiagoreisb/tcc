@@ -19,6 +19,13 @@ const getScheduleRoutes = (app, crud, read) => {
                 req.params,
                 (data) => res.json(data));
         })
+        .get('/by/contract/:contract_id', (req, res) => {
+            read.getScheduleByContractId(req.params.contract_id, (data) => res.json(data));
+        })
+        .get('/by/person/:id', (req, res) => {
+            read.getActualSchedule(req.params.id, (data) => res.json(data));
+        })
+
         .post('/save', (req, res) => {
             crud.saveNew(new Schedule(req.body), (data) => res.send(data));
         })
