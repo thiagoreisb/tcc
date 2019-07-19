@@ -3,7 +3,7 @@
 const Router = require('express');
 const Attendance = require('../models/attendance');
 
-const getAttendanceRoutes = (app, crud) => {
+const getAttendanceRoutes = (app, crud, read) => {
     const router = new Router();
 
     router
@@ -16,6 +16,10 @@ const getAttendanceRoutes = (app, crud) => {
                 req.params,
                 (data) => res.json(data));
         })
+        .get('/by/frequency/:id', (req, res) => {
+            read.getAttendanceByFrequencyId(req.params.id,(data) => res.json(data));
+        })
+
         .post('/save', (req, res) => {
             crud.saveNew(new Attendance(req.body), (data) => res.send(data));
         })

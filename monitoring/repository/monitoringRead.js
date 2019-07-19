@@ -60,6 +60,18 @@ class MonitoringRead {
 
         db.exec(query,[id],cb);
     }
+
+    getFrequencyByScheduleId(id, cb) {
+        let query = 'select * from frequency where schedule_id = $1 ';
+
+        db.exec(query,[id],cb);
+    }
+
+    getAttendanceByFrequencyId(id, cb) {
+        let query = 'select * from attendance where frequency_id = $1 ';
+
+        db.exec(query,[id],cb);
+    }
 }
 
 module.exports = MonitoringRead;

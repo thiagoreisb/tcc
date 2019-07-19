@@ -16,9 +16,9 @@ app.use(bodyParser.json());
 // routes
 require('./routes/testRoutes')(app);
 require('./routes/advisorHistoryRoutes')(app, crud);
-require('./routes/attendanceRoutes')(app, crud);
+require('./routes/attendanceRoutes')(app, crud, read);
 require('./routes/contractRoutes')(app, crud, read);
-require('./routes/frequencyRoutes')(app, crud);
+require('./routes/frequencyRoutes')(app, crud, read);
 require('./routes/monitorHistoryRoutes')(app, crud);
 require('./routes/scheduleRoutes')(app, crud, read);
 

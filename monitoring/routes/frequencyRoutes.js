@@ -3,7 +3,7 @@
 const Router = require('express');
 const Frequency = require('../models/frequency');
 
-const getFrequencyRoutes = (app, crud) => {
+const getFrequencyRoutes = (app, crud, read) => {
     const router = new Router();
 
     router
@@ -16,6 +16,10 @@ const getFrequencyRoutes = (app, crud) => {
                 req.params,
                 (data) => res.json(data));
         })
+        .get('/by/schedule/:id', (req, res) => {
+            read.getFrequencyByScheduleId(req.params.id,(data) => res.json(data));
+        })
+
         .post('/save', (req, res) => {
             crud.saveNew(new Frequency(req.body), (data) => res.send(data));
         })

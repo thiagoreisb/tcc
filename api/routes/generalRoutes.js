@@ -62,6 +62,18 @@ const generalRoutes = (app, api) => {
             .then((data) => res.send(data))
             .catch((err) => res.send(err));
     });
+
+    app.get('/frequency/from/schedule/:id', (req, res) => {
+        api.getFromMonitoring('/frequency/by/schedule/' + req.params.id)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
+
+    app.get('/attendance/from/frequency/:id', (req, res) => {
+        api.getFromMonitoring('/attendance/by/frequency/' + req.params.id)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
 };
 
 module.exports = generalRoutes;
