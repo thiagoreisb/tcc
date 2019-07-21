@@ -67,8 +67,68 @@ class MonitoringRead {
         db.exec(query,[id],cb);
     }
 
+    getFrequencyByContractId(id, cb) {
+        let query =
+                'select f.* from frequency f '
+            +   'inner join  schedule s on s.id = f.schedule_id '
+            +   'inner join  contract c on c.id = s.contract_id '
+            +   'where c.id = $1 '
+            +   'and (CURRENT_DATE between c.start_date and c.end_date or c.situation in (0, 1)) ';
+
+        db.exec(query,[id],cb);
+    }
+
+    getFrequencyByPersonId(id, cb) {
+        let query =
+                'select f.* from frequency f '
+            +   'inner join  schedule s on s.id = f.schedule_id '
+            +   'inner join  contract c on c.id = s.contract_id '
+            +   'left join   monitor_history m on c.id = m.contract_id '
+            +   'left join   advisor_history a on c.id = a.contract_id '
+            +   'where (m.person_id = $1 or a.person_id = $1) '
+            +   'and (CURRENT_DATE between c.start_date and c.end_date or c.situation in (0, 1)) ';
+
+        db.exec(query,[id],cb);
+    }
+
     getAttendanceByFrequencyId(id, cb) {
         let query = 'select * from attendance where frequency_id = $1 ';
+
+        db.exec(query,[id],cb);
+    }
+
+    getAttendanceByScheduleId(id, cb) {
+        let query =
+                'select att.* from attendance att '
+            +   'inner join  frequency f on f.id = att.frequency_id '
+            +   'inner join  schedule s on s.id = f.schedule_id '
+            +   'where s.id = $1 ';
+
+        db.exec(query,[id],cb);
+    }
+
+    getAttendanceByContractId(id, cb) {
+        let query =
+                'select att.* from attendance att '
+            +   'inner join  frequency f on f.id = att.frequency_id '
+            +   'inner join  schedule s on s.id = f.schedule_id '
+            +   'inner join  contract c on c.id = s.contract_id '
+            +   'where c.id = $1 '
+            +   'and (CURRENT_DATE between c.start_date and c.end_date or c.situation in (0, 1)) ';
+
+        db.exec(query,[id],cb);
+    }
+
+    getAttendanceByPersonId(id, cb) {
+        let query =
+                'select att.* from attendance att '
+            +   'inner join  frequency f on f.id = att.frequency_id '
+            +   'inner join  schedule s on s.id = f.schedule_id '
+            +   'inner join  contract c on c.id = s.contract_id '
+            +   'left join   monitor_history m on c.id = m.contract_id '
+            +   'left join   advisor_history a on c.id = a.contract_id '
+            +   'where (m.person_id = $1 or a.person_id = $1) '
+            +   'and (CURRENT_DATE between c.start_date and c.end_date or c.situation in (0, 1)) ';
 
         db.exec(query,[id],cb);
     }

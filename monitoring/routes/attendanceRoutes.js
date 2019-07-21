@@ -19,6 +19,15 @@ const getAttendanceRoutes = (app, crud, read) => {
         .get('/by/frequency/:id', (req, res) => {
             read.getAttendanceByFrequencyId(req.params.id,(data) => res.json(data));
         })
+        .get('/by/schedule/:id', (req, res) => {
+            read.getAttendanceByScheduleId(req.params.id,(data) => res.json(data));
+        })
+        .get('/by/contract/:id', (req, res) => {
+            read.getAttendanceByContractId(req.params.id,(data) => res.json(data));
+        })
+        .get('/by/person/:id', (req, res) => {
+            read.getAttendanceByPersonId(req.params.id,(data) => res.json(data));
+        })
 
         .post('/save', (req, res) => {
             crud.saveNew(new Attendance(req.body), (data) => res.send(data));

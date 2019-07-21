@@ -19,6 +19,12 @@ const getFrequencyRoutes = (app, crud, read) => {
         .get('/by/schedule/:id', (req, res) => {
             read.getFrequencyByScheduleId(req.params.id,(data) => res.json(data));
         })
+        .get('/by/contract/:id', (req, res) => {
+            read.getFrequencyByContractId(req.params.id,(data) => res.json(data));
+        })
+        .get('/by/person/:id', (req, res) => {
+            read.getFrequencyByPersonId(req.params.id,(data) => res.json(data));
+        })
 
         .post('/save', (req, res) => {
             crud.saveNew(new Frequency(req.body), (data) => res.send(data));

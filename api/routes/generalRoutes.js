@@ -69,8 +69,38 @@ const generalRoutes = (app, api) => {
             .catch((err) => res.send(err));
     });
 
+    app.get('/frequency/from/contract/:id', (req, res) => {
+        api.getFromMonitoring('/frequency/by/contract/' + req.params.id)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
+
+    app.get('/frequency/from/person/:id', (req, res) => {
+        api.getFromMonitoring('/frequency/by/person/' + req.params.id)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
+
     app.get('/attendance/from/frequency/:id', (req, res) => {
         api.getFromMonitoring('/attendance/by/frequency/' + req.params.id)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
+
+    app.get('/attendance/from/schedule/:id', (req, res) => {
+        api.getFromMonitoring('/attendance/by/schedule/' + req.params.id)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
+
+    app.get('/attendance/from/contract/:id', (req, res) => {
+        api.getFromMonitoring('/attendance/by/contract/' + req.params.id)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
+
+    app.get('/attendance/from/person/:id', (req, res) => {
+        api.getFromMonitoring('/attendance/by/person/' + req.params.id)
             .then((data) => res.send(data))
             .catch((err) => res.send(err));
     });

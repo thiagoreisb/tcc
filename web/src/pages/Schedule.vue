@@ -1,6 +1,7 @@
 <template>
   <div id="schedule">
     <h1>Horários</h1>
+    {{horarios}}
   </div>
 </template>
 
@@ -10,15 +11,20 @@ export default {
   components: {
   },
   props: {
-    parentData: Object
+    parentData: Object,
+    apiData: Object,
+    userData: Object
   },
   data() {
     return {
-      firebase: this.parentData
+      firebase: this.parentData,
+      api: this.apiData,
+      user: this.userData,
+      horarios: []
     }
   },
-  methods: {
-    //
+  created() {
+    this.api.get('schedules/from/person/' + this.user.id, (res) => this.horarios = res, (res) => this.horarios = res);
   }
 }
 </script>

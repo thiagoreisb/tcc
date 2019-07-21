@@ -75,7 +75,7 @@ module.exports = function (Router, firebase) {
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
     
     ref.on("value", function(snapshot) {
-      console.log(snapshot.val());
+      //console.log(snapshot.val());
       if (requiresAuth && !currentUser) next('login');
       else if (!requiresAuth && currentUser) next('app');
       else next();

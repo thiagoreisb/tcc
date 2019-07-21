@@ -8,19 +8,13 @@
       <router-link to="/app/relatorios">Relatórios</router-link> |
       <a @click="signOut" href="#">Sair</a>
     </div>
-    <classes :classrooms="test"></classes>
-    <router-view :parentData="firebase"/>
+    <router-view :parentData="firebase" :apiData="api" :userData="user"/>
   </div>
 </template>
 
 <script>
-import Classes from '../components/Classes'
-
 export default {
   name: 'dashboard',
-  components: {
-    Classes
-  },
   props: {
     parentData: Object,
     apiData: Object
@@ -29,11 +23,19 @@ export default {
     return {
       firebase: this.parentData,
       api: this.apiData,
-      test: []
+      user: null
     }
   },
   created() {
-    this.api.get('classrooms', (res) => this.test = res, (res) => this.test = res);
+    const db = this.firebase.database();
+    const ref = db.ref('roles/' + this.firebase.auth().currentUser.uid);
+    const _this = this;
+    
+    ref.on("value", function(snapshot) {
+      _this.user = snapshot.val();
+    }, function(err) {
+      console.log(err);
+    });
   },
   methods: {
     signOut: function() {
