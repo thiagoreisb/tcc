@@ -48,6 +48,15 @@ class ReportsRead {
 
         db.exec(query,[id],cb);
     }
+
+    getActualCoordinatorReport(id, cb) {
+        let query = 
+                'select * from coordinator c '
+            +   'inner join coordinator_report r on c.id = r.coordinator_id '
+            +   'where person_id = $1 and sent is null limit 1 ';
+
+        db.exec(query,[id],cb);
+    }
 }
 
 module.exports = ReportsRead;

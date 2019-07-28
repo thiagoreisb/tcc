@@ -25,6 +25,9 @@ const getCoordinatorRoutes = (app, crud) => {
         .get('/all/reports/:id', (req, res) => {
             read.getCoordinatorReportHistory(req.params.id, (data) => res.json(data));
         })
+        .get('/actual/:id', (req, res) => {
+            read.getActualCoordinatorReport(req.params.id, (data) => res.json(data));
+        })
 
         .post('/save', (req, res) => {
             crud.saveNew(new Coordinator(req.body), (data) => res.send(data));
