@@ -2,6 +2,9 @@
 
 const Router = require('express');
 const Person = require('../models/person');
+const Read = require('../repository/institutionRead');
+
+const read = new Read();
 
 const getPersonRoutes = (app, crud) => {
     const router = new Router();
@@ -16,6 +19,13 @@ const getPersonRoutes = (app, crud) => {
                 req.params,
                 (data) => res.json(data));
         })
+        .get('/get/student/:name', (req, res) => {
+            read.getPersonByName(req.params.name, true, (data) => res.json(data));
+        })
+        .get('/get/professor/:name', (req, res) => {
+            read.getPersonByName(req.params.name, false, (data) => res.json(data));
+        })
+
         .post('/save', (req, res) => {
             crud.saveNew(new Person(req.body), (data) => res.send(data));
         })

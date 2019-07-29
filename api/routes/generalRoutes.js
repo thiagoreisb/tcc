@@ -104,6 +104,18 @@ const generalRoutes = (app, api) => {
             .then((data) => res.send(data))
             .catch((err) => res.send(err));
     });
+
+    app.get('/student/:name', (req, res) => {
+        api.getFromInstitution('/person/get/student/' + req.params.name)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
+
+    app.get('/professor/:name', (req, res) => {
+        api.getFromInstitution('/person/get/professor/' + req.params.name)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
 };
 
 module.exports = generalRoutes;

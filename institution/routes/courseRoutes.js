@@ -2,6 +2,9 @@
 
 const Router = require('express');
 const Course = require('../models/course');
+const Read = require('../repository/institutionRead');
+
+const read = new Read();
 
 const getCourseRoutes = (app, crud) => {
     const router = new Router();
@@ -16,6 +19,10 @@ const getCourseRoutes = (app, crud) => {
                 req.params,
                 (data) => res.json(data));
         })
+        .get('/by/student/:id', (req, res) => {
+            read.getCourseByPersonId(req.params.id, (data) => res.json(data));
+        })
+
         .post('/save', (req, res) => {
             crud.saveNew(new Course(req.body), (data) => res.send(data));
         })
