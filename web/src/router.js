@@ -7,6 +7,16 @@ const Report = require('./pages/Report.vue').default;
 const Schedule = require('./pages/Schedule.vue').default;
 const Erro = require('./pages/Error.vue').default;
 
+/// User role constants
+const STUDENT_TYPE = 0;
+const PROFESSOR_TYPE = 1;
+const ADMIN_TYPE = 2;
+const SYS_ADMIN_TYPE = 3;
+const MONITOR_TYPE = 10;
+const ADVISOR_TYPE = 20;
+const COORDINATOR_TYPE = 30;
+const ALL_TYPES = 999;
+
 module.exports = function (Router, firebase) {
   const router = new Router({
     routes: [
@@ -29,27 +39,40 @@ module.exports = function (Router, firebase) {
         path: '/app',
         name: 'app',
         component: Dashboard,
+        meta: {
+          requiresAuth: true,
+          customAuth: [ALL_TYPES]
+        },
         children: [
           {
             path: 'monitoria',
-            component: Contract
+            component: Contract,
+            meta: {
+              customAuth: [ALL_TYPES]
+            }
           },
           {
             path: 'atendimentos',
-            component: Attendance
+            component: Attendance,
+            meta: {
+              customAuth: [MONITOR_TYPE]
+            }
           },
           {
             path: 'relatorios',
-            component: Report
+            component: Report,
+            meta: {
+              customAuth: [MONITOR_TYPE, ADVISOR_TYPE, COORDINATOR_TYPE]
+            }
           },
           {
             path: 'horarios',
-            component: Schedule
+            component: Schedule,
+            meta: {
+              customAuth: [MONITOR_TYPE]
+            }
           }
-        ],
-        meta: {
-          requiresAuth: true
-        }
+        ]
       },
       {
         path: '/erro',
@@ -75,9 +98,15 @@ module.exports = function (Router, firebase) {
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
     
     ref.on("value", function(snapshot) {
-      //console.log(snapshot.val());
+      // Gets the deepest route
+      let customAuth = to.matched.slice().reverse()[0].meta.customAuth;
+      
+      // Checks user authorization
+      let pageAuth = customAuth === undefined ? true : customAuth.some(r => r === ALL_TYPES || r === snapshot.val().type);
+
       if (requiresAuth && !currentUser) next('login');
       else if (!requiresAuth && currentUser) next('app');
+      else if (!pageAuth) next('app');
       else next();
     }, function (errorObject) {
       next('error');
