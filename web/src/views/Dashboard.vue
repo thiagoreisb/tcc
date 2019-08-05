@@ -1,11 +1,11 @@
 <template>
   <div id="dashboard">
-    <div id="nav">
+    <div id="nav" v-if="user !== null">
       <router-link to="/app">Início</router-link> |
-      <router-link to="/app/monitoria">Monitoria</router-link> |
-      <router-link to="/app/horarios">Horários</router-link> |
-      <router-link to="/app/atendimentos">Atendimentos</router-link> |
-      <router-link to="/app/relatorios">Relatórios</router-link> |
+      <span v-if="user.type"><router-link to="/app/monitoria">Monitoria</router-link> | </span>
+      <span v-if="user.type == 10"><router-link to="/app/horarios">Horários</router-link> | </span>
+      <span v-if="user.type == 10"><router-link to="/app/atendimentos">Atendimentos</router-link> | </span>
+      <span v-if="user.type == 10 || user.type == 20 || user.type == 30"><router-link to="/app/relatorios">Relatórios</router-link> | </span>
       <a @click="signOut" href="#">Sair</a>
     </div>
     <router-view :parentData="firebase" :apiData="api" :userData="user"/>
