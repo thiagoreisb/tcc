@@ -39,9 +39,18 @@ const generalRoutes = (app, api) => {
             .catch((err) => res.send(err));
     });
 
+    /**
+     * TODO: Pesquisar nomes de monitor, orientador e disciplina
+     * (ver metodo acima)
+     */
     app.get('/monitoring/all/my/:id', (req, res) => {
         api.getFromMonitoring('/contract/all/my/' + req.params.id)
-            .then((data) => res.send(data))
+            .then((data) => {
+                res.send(data);
+
+                //return Promise.all([]);
+            })
+            //.then(data => {})
             .catch((err) => res.send(err));
     });
 
@@ -113,6 +122,12 @@ const generalRoutes = (app, api) => {
 
     app.get('/professor/:name', (req, res) => {
         api.getFromInstitution('/person/get/professor/' + req.params.name)
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
+
+    app.get('/report/all/my/:id', (req, res) => {
+        api.getFromReports('/report/all/my/' + req.params.id)
             .then((data) => res.send(data))
             .catch((err) => res.send(err));
     });

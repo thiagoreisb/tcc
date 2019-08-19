@@ -1,17 +1,21 @@
 <template>
   <div id="contract">
     <h1>Termos</h1>
-    <termos :termos="termos" :ready="status"></termos>
+    <monitoring v-if="user.type == constants.ADMIN_TYPE" :apiData="api"></monitoring>
+    <termos v-else :termos="termos" :ready="status"></termos>
   </div>
 </template>
 
 <script>
 import Termos from '../components/Termos'
+import Monitoring from '../components/Monitoring'
+import Constants from '../utils/constants'
 
 export default {
   name: 'contract',
   components: {
-    Termos
+    Termos,
+    Monitoring
   },
   props: {
     parentData: Object,
@@ -24,7 +28,8 @@ export default {
       api: this.apiData,
       user: this.userData,
       termos: [],
-      status: false
+      status: false,
+      constants: Constants
     }
   },
   methods: {

@@ -19,6 +19,14 @@ class ApiController {
             .catch((error) => err(error));
     }
 
+    /**
+     * Returns a promise with the response of POST resource
+     * @param {string} resource API resource
+     * @param {object} data Data to be sent
+     */
+    post(resource, data) {
+        return axios.post(this.api_base + resource, data);
+    }
 }
 
 const api = new ApiController();

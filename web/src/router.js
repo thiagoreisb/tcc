@@ -8,14 +8,7 @@ const Schedule = require('./pages/Schedule.vue').default;
 const Erro = require('./pages/Error.vue').default;
 
 /// User role constants
-const STUDENT_TYPE = 0;
-const PROFESSOR_TYPE = 1;
-const ADMIN_TYPE = 2;
-const SYS_ADMIN_TYPE = 3;
-const MONITOR_TYPE = 10;
-const ADVISOR_TYPE = 20;
-const COORDINATOR_TYPE = 30;
-const ALL_TYPES = 999;
+const Constants = require('./utils/constants').default;
 
 module.exports = function (Router, firebase) {
   const router = new Router({
@@ -41,35 +34,35 @@ module.exports = function (Router, firebase) {
         component: Dashboard,
         meta: {
           requiresAuth: true,
-          customAuth: [ALL_TYPES]
+          customAuth: [Constants.ALL_TYPES]
         },
         children: [
           {
             path: 'monitoria',
             component: Contract,
             meta: {
-              customAuth: [ALL_TYPES]
+              customAuth: [Constants.ALL_TYPES]
             }
           },
           {
             path: 'atendimentos',
             component: Attendance,
             meta: {
-              customAuth: [MONITOR_TYPE]
+              customAuth: [Constants.MONITOR_TYPE]
             }
           },
           {
             path: 'relatorios',
             component: Report,
             meta: {
-              customAuth: [MONITOR_TYPE, ADVISOR_TYPE, COORDINATOR_TYPE]
+              customAuth: [Constants.MONITOR_TYPE, Constants.ADVISOR_TYPE, Constants.COORDINATOR_TYPE]
             }
           },
           {
             path: 'horarios',
             component: Schedule,
             meta: {
-              customAuth: [MONITOR_TYPE]
+              customAuth: [Constants.MONITOR_TYPE]
             }
           }
         ]
@@ -102,7 +95,7 @@ module.exports = function (Router, firebase) {
       let customAuth = to.matched.slice().reverse()[0].meta.customAuth;
       
       // Checks user authorization
-      let pageAuth = customAuth === undefined ? true : customAuth.some(r => r === ALL_TYPES || r === snapshot.val().type);
+      let pageAuth = customAuth === undefined ? true : customAuth.some(r => r === Constants.ALL_TYPES || r === snapshot.val().type);
 
       if (requiresAuth && !currentUser) next('login');
       else if (!requiresAuth && currentUser) next('app');
