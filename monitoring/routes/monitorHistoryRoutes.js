@@ -22,8 +22,8 @@ const getMonitorHistoryRoutes = (app, crud) => {
         .put('/update', (req, res) => {
             crud.update(new MonitorHistory(req.body), (data) => res.send(data));
         })
-        .delete('/delete', (req, res) => {
-            crud.remove(new MonitorHistory(req.body), (data) => res.send(data));
+        .delete('/delete/:id', (req, res) => {
+            crud.remove(MonitorHistory, req.params.id, (data) => res.send(data));
         });
     
     app.use('/monitor', router);

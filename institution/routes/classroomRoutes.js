@@ -22,8 +22,8 @@ const getClassroomRoutes = (app, crud) => {
         .put('/update', (req, res) => {
             crud.update(new Classroom(req.body), (data) => res.send(data));
         })
-        .delete('/delete', (req, res) => {
-            crud.remove(new Classroom(req.body), (data) => res.send(data));
+        .delete('/delete/:id', (req, res) => {
+            crud.remove(Classroom, req.params.id, (data) => res.send(data));
         });
     
     app.use('/classroom', router);

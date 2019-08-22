@@ -22,8 +22,8 @@ const getDepartmentRoutes = (app, crud) => {
         .put('/update', (req, res) => {
             crud.update(new Department(req.body), (data) => res.send(data));
         })
-        .delete('/delete', (req, res) => {
-            crud.remove(new Department(req.body), (data) => res.send(data));
+        .delete('/delete/:id', (req, res) => {
+            crud.remove(Department, req.params.id, (data) => res.send(data));
         });
     
     app.use('/department', router);

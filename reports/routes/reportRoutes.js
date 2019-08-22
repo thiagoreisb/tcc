@@ -32,8 +32,8 @@ const getReportRoutes = (app, crud) => {
         .put('/update', (req, res) => {
             crud.update(new Report(req.body), (data) => res.send(data));
         })
-        .delete('/delete', (req, res) => {
-            crud.remove(new Report(req.body), (data) => res.send(data));
+        .delete('/delete/:id', (req, res) => {
+            crud.remove(Report, req.params.id, (data) => res.send(data));
         });
     
     app.use('/report', router);

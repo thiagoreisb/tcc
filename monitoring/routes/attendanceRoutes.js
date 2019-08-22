@@ -35,8 +35,8 @@ const getAttendanceRoutes = (app, crud, read) => {
         .put('/update', (req, res) => {
             crud.update(new Attendance(req.body), (data) => res.send(data));
         })
-        .delete('/delete', (req, res) => {
-            crud.remove(new Attendance(req.body), (data) => res.send(data));
+        .delete('/delete/:id', (req, res) => {
+            crud.remove(Attendance, req.params.id, (data) => res.send(data));
         });
     
     app.use('/attendance', router);

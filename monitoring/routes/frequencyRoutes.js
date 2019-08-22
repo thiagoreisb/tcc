@@ -32,8 +32,8 @@ const getFrequencyRoutes = (app, crud, read) => {
         .put('/update', (req, res) => {
             crud.update(new Frequency(req.body), (data) => res.send(data));
         })
-        .delete('/delete', (req, res) => {
-            crud.remove(new Frequency(req.body), (data) => res.send(data));
+        .delete('/delete/:id', (req, res) => {
+            crud.remove(Frequency, req.params.id, (data) => res.send(data));
         });
     
     app.use('/frequency', router);

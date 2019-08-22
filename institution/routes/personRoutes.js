@@ -32,8 +32,8 @@ const getPersonRoutes = (app, crud) => {
         .put('/update', (req, res) => {
             crud.update(new Person(req.body), (data) => res.send(data));
         })
-        .delete('/delete', (req, res) => {
-            crud.remove(new Person(req.body), (data) => res.send(data));
+        .delete('/delete/:id', (req, res) => {
+            crud.remove(Person, req.params.id, (data) => res.send(data));
         });
     
     app.use('/person', router);

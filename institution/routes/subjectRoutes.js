@@ -22,8 +22,8 @@ const getSubjectRoutes = (app, crud) => {
         .put('/update', (req, res) => {
             crud.update(new Subject(req.body), (data) => res.send(data));
         })
-        .delete('/delete', (req, res) => {
-            crud.remove(new Subject(req.body), (data) => res.send(data));
+        .delete('/delete/:id', (req, res) => {
+            crud.remove(Subject, req.params.id, (data) => res.send(data));
         });
     
     app.use('/subject', router);

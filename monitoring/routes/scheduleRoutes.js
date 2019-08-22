@@ -32,8 +32,8 @@ const getScheduleRoutes = (app, crud, read) => {
         .put('/update', (req, res) => {
             crud.update(new Schedule(req.body), (data) => res.send(data));
         })
-        .delete('/delete', (req, res) => {
-            crud.remove(new Schedule(req.body), (data) => res.send(data));
+        .delete('/delete/:id', (req, res) => {
+            crud.remove(Schedule, req.params.id, (data) => res.send(data));
         });
     
     app.use('/schedule', router);

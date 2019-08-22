@@ -67,7 +67,7 @@ class Crud {
         insert = insert.substr(0, insert.length - 1);
 
         // Constructs the query
-        let query = `insert into ${table} (${props}) values (${insert});`;
+        let query = `insert into ${table} (${props}) values (${insert}) returning id;`;
         
         // Executes the query with the proper values
         db.exec(query, newValues, cb);
@@ -116,13 +116,14 @@ class Crud {
      * Removes an entity
      * @function
      * @param {Object} newRecord Instantiated entity
+     * @param {string} id The PK value for this entity
      * @param {function} cb Callback function
      */
-    remove(entity, cb) {
+    remove(entity, id, cb) {
         // Executes the query with the proper values
         db.exec(
             `delete from ${entity.getTable()} where id = $1;`,
-            [entity['id']],
+            [id],
             cb);
     }
 }

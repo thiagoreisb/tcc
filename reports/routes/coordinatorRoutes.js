@@ -35,8 +35,8 @@ const getCoordinatorRoutes = (app, crud) => {
         .put('/update', (req, res) => {
             crud.update(new Coordinator(req.body), (data) => res.send(data));
         })
-        .delete('/delete', (req, res) => {
-            crud.remove(new Coordinator(req.body), (data) => res.send(data));
+        .delete('/delete/:id', (req, res) => {
+            crud.remove(Coordinator, req.params.id, (data) => res.send(data));
         });
     
     app.use('/coordinator', router);

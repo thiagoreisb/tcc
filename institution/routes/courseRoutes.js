@@ -29,8 +29,8 @@ const getCourseRoutes = (app, crud) => {
         .put('/update', (req, res) => {
             crud.update(new Course(req.body), (data) => res.send(data));
         })
-        .delete('/delete', (req, res) => {
-            crud.remove(new Course(req.body), (data) => res.send(data));
+        .delete('/delete/:id', (req, res) => {
+            crud.remove(Course, req.params.id, (data) => res.send(data));
         });
     
     app.use('/course', router);

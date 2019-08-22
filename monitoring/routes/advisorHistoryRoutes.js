@@ -22,8 +22,8 @@ const getAdvisorHistoryRoutes = (app, crud) => {
         .put('/update', (req, res) => {
             crud.update(new AdvisorHistory(req.body), (data) => res.send(data));
         })
-        .delete('/delete', (req, res) => {
-            crud.remove(new AdvisorHistory(req.body), (data) => res.send(data));
+        .delete('/delete/:id', (req, res) => {
+            crud.remove(AdvisorHistory, req.params.id, (data) => res.send(data));
         });
     
     app.use('/advisor', router);

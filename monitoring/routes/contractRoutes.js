@@ -32,8 +32,8 @@ const getContractRoutes = (app, crud, read) => {
         .put('/update', (req, res) => {
             crud.update(new Contract(req.body), (data) => res.send(data));
         })
-        .delete('/delete', (req, res) => {
-            crud.remove(new Contract(req.body), (data) => res.send(data));
+        .delete('/delete/:id', (req, res) => {
+            crud.remove(Contract, req.params.id, (data) => res.send(data));
         });
     
     app.use('/contract', router);
