@@ -70,8 +70,7 @@ class Crud {
         let query = `insert into ${table} (${props}) values (${insert}) returning id;`;
         
         // Executes the query with the proper values
-        // db.exec(query, newValues, cb);
-        db.send(cb, null, {rows: query + '  ' + newValues.toString()});
+        db.exec(query, newValues, cb);
     }
 
     /**
@@ -110,8 +109,7 @@ class Crud {
         let query = `update ${table} set ${update} where id = $${count};`;
             
         // Executes the query with the proper values
-        //db.exec(query, newValues, cb);
-        db.send(cb, null, {rows: query + '  ' + newValues.toString()});
+        db.exec(query, newValues, cb);
     }
 
     /**
@@ -123,11 +121,10 @@ class Crud {
      */
     remove(entity, id, cb) {
         // Executes the query with the proper values
-        // db.exec(
-        //     `delete from ${entity.getTable()} where id = $1;`,
-        //     [id],
-        //     cb);
-        db.send(cb, null, {rows: `delete from ${entity.getTable()} where id = $1; ${id}`});
+        db.exec(
+            `delete from ${entity.getTable()} where id = $1;`,
+            [id],
+            cb);
     }
 }
 

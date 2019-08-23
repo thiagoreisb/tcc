@@ -2,6 +2,7 @@
 
 const Router = require('express');
 const Coordinator = require('../models/coordinator');
+const Report = require('../models/coordinator_report');
 const Read = require('../repository/reportsRead');
 
 const read = new Read();
@@ -37,6 +38,16 @@ const getCoordinatorRoutes = (app, crud) => {
         })
         .delete('/delete/:id', (req, res) => {
             crud.remove(Coordinator, req.params.id, (data) => res.send(data));
+        })
+        
+        .post('/save/report', (req, res) => {
+            crud.saveCoordReport(new Report(req.body), (data) => res.send(data));
+        })
+        .put('/update/report', (req, res) => {
+            crud.updateCoordReport(new Report(req.body), (data) => res.send(data));
+        })
+        .delete('/delete/report/:advisor/:monitor/:coord', (req, res) => {
+            crud.removeCoordReport(req.params.advisor, req.params.monitor, req.params.coord, (data) => res.send(data));
         });
     
     app.use('/coordinator', router);
