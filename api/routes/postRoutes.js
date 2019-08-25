@@ -17,24 +17,14 @@ const postRoutes = (app, api) => {
         var coord_report_id;
         var monitor_report_id;
         var advisor_report_id;
-
-        /// tests
-        var p = function(t, i, o) {return new Promise((resolve) => setTimeout(resolve, t, o));}
-        var out = {'status':[{'id':100}]}
-        var course = {'status':[{'id':100, 'name': 'course 2', 'person_id': 51, 'department_id': 1}]}
-        var empty = {'status':[]}
-        var coord = {'status':[{'id':10}]}
-        var success = {'status':[{'success':1}]}
-
+        
         Promise.all([
-            p(100, data, out),//adds contract/termo
-            p(10, 'course/by/student/' + monitor_id, course)//get course in institution
+            api.postMonitoring('/contract/save', data),
+            api.getFromInstitution('/course/by/student/' + monitor_id)
         ]).then((r) => {
-            let id = r[0].status[0].id
+            let id = r[0].status[0].id;
 
-            coord_id = r[1].status[0].person_id
-
-            console.log(id, coord_id)//
+            coord_id = r[1].status[0].person_id;
 
             let monitor_history = {
                 'person_id': monitor_id,
@@ -83,11 +73,11 @@ const postRoutes = (app, api) => {
             }
 
             return Promise.all([
-                p(10, monitor_history, out),//insert monitor_history
-                p(10, advisor_history, out),//insert advisor_history
-                p(10, monitor_report, out),//insert report for monitor
-                p(500, advisor_report, out),//insert report for advisor
-                p(100, '/coordinator/actual/' + coord_id, out)//report -> get if there is a actual coord report
+                api.postMonitoring('/monitor/save', monitor_history),
+                api.postMonitoring('/advisor/save', advisor_history),
+                api.postReports('/report/save', monitor_report),
+                api.postReports('/report/save', advisor_report),
+                api.getFromReports('/coordinator/actual/' + coord_id)
             ]);
         }).then((r) => {
             let stat = r[4].status;
@@ -95,8 +85,6 @@ const postRoutes = (app, api) => {
             monitor_report_id = r[2].status[0].id
             advisor_report_id = r[3].status[0].id
 
-            console.log(r[0].status[0], r[1].status[0], monitor_report_id, advisor_report_id, stat)//
-            
             // Is there an actual coord report already?
             if (!(Array.isArray(stat) && stat.length)) {
                 // No. Create one
@@ -108,7 +96,7 @@ const postRoutes = (app, api) => {
                     'person_id':coord_id
                 }
 
-                return p(100, coord_report, coord)
+                return api.postReports('/coordinator/save', coord_report);
             } else {
                 // Yes. Jump to next 'then'
                 coord_report_id = stat[0].id;
@@ -120,7 +108,7 @@ const postRoutes = (app, api) => {
             if (coord_report_id === undefined) {
                 coord_report_id = r.status[0].id
             }
-            console.log(coord_report_id)//
+
             let coordinator_report = {
                 'advisor_id':advisor_report_id,
                 'monitor_id':monitor_report_id,
@@ -128,8 +116,7 @@ const postRoutes = (app, api) => {
                 'renew':null
             }
 
-            // TODO: Add save coordinator_report method
-            return p(100, coordinator_report, success)
+            return api.postReports('/coordinator/save/report', coordinator_report);
         }).then((r) => res.send(r));
     });
 };
