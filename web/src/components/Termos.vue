@@ -31,7 +31,7 @@ export default {
         get_date: function (value) {
             let date = new Date(value);
             let days = date.getDate();
-            let month = date.getMonth();
+            let month = date.getMonth() + 1;
             let year = date.getFullYear();
 
             return (days < 10 ? "0" : "") + days + "/" + (month < 10 ? "0" : "") + month + "/" + year;

@@ -131,6 +131,18 @@ const generalRoutes = (app, api) => {
             .then((data) => res.send(data))
             .catch((err) => res.send(err));
     });
+
+    app.get('/report/actual/my/:id', (req, res) => {
+        api.getFromMonitoring('/contract/actual/my/' + req.params.id)
+            .then((data) => {
+                let contract = data.status[0];
+
+                let id = contract === undefined ? 0 : contract.id;
+
+                return api.getFromReports('/report/c/' + id + '/my/' + req.params.id)
+            }).then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
 };
 
 module.exports = generalRoutes;

@@ -28,7 +28,7 @@ export default {
     }
   },
   created() {
-    this.api.get('report/all/my/' + this.user.id, (res) => this.reports = res, (res) => this.reports = res);
+    this.api.get('report/actual/my/' + this.user.id, (res) => this.reports = res, (res) => this.reports = res);
   }
 }
 </script>
