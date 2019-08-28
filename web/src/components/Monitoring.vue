@@ -1,5 +1,6 @@
 <template>
-     <div class="row">
+    <div class="container">
+        <loading :loading="loading"></loading>
         <div class="col">
             <div class="card">
                 <div class="card-header">Monitoria</div>
@@ -71,14 +72,20 @@
 </template>
 
 <script>
+import Loading from "./Loading"
+
 export default {
+    components: {
+        Loading
+    },
     props: {
         apiData: {}
     },
     data() {
         return {
             api: this.apiData,
-            monitoring: {}
+            monitoring: {},
+            loading: false
         }
     },
     methods: {
@@ -103,16 +110,27 @@ export default {
                     this.monitoring.monitor_id = parseInt(this.monitoring.monitor_id);
                     this.monitoring.advisor_id = parseInt(this.monitoring.advisor_id);
 
+                    /// Offset date values
+                    start.setHours(start.getHours() + 4);
+                    end.setHours(end.getHours() + 4);
+                    
+                    this.loading = true;
+                    
                     //send data to api
                     this.api.post('new/monitoring', this.monitoring)
                         .then((res) => {
+                            this.loading = false;
+
                             if (res.data.err !== undefined) {
                                 alert(err);
                             } else {
                                 alert("Monitoria criada!");
                             }
                         })
-                        .catch((err) => alert(err));
+                        .catch((err) => {
+                            this.loading = false;
+                            alert(err)
+                        });
                 }
             }
         },
