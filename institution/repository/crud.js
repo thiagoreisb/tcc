@@ -54,10 +54,10 @@ class Crud {
         propsArray.forEach(
             function(val) {
                 if (val !== 'id') {
-                    props += val + ',';
+                    props += '"' + val + '",';
                     insert += '$' + count + ',';
                     count++;
-                    newValues.push(newRecord[val]);
+                    newValues.push(newRecord[val] || null);
                 }
             }
         );
@@ -93,8 +93,8 @@ class Crud {
         propsArray.forEach(
             function(val) {
                 if (val !== 'id') {
-                    newValues.push(entity[val]);
-                    update += val + ' = $' + count + ', ';
+                    newValues.push(entity[val] || null);
+                    update += '"' + val + '" = $' + count + ', ';
                     count++;
                 }
             }
