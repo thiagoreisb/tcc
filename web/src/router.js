@@ -62,7 +62,7 @@ module.exports = function (Router, firebase) {
             path: 'horarios',
             component: Schedule,
             meta: {
-              customAuth: [Constants.MONITOR_TYPE]
+              customAuth: [Constants.MONITOR_TYPE, Constants.ADVISOR_TYPE]
             }
           }
         ]

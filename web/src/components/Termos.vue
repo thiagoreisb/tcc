@@ -16,41 +16,23 @@
                     <td>{{get_date(termo.end_date)}}</td>
                     <td>{{contract_situation(termo.situation)}}</td>
                     <td>{{termo.assistance ? "Sim" : "Não"}}</td>
-                    <td class="btn btn-secondary" @click="openSchedule(termo.id)">Plano</td>
+                    <td><button class="btn btn-secondary" @click="openSchedule(termo.id)">Plano</button></td>
                 </tr>
             </tbody>
         </table>
-        <horarios></horarios>
     </div>
 </template>
 
 <script>
-import Horarios from '../components/Horarios'
-import Api from '../controllers/apiController'
-
 export default {
     props: {
         termos: {},
         ready: false
     },
-    components: {
-        Horarios
-    },
-    data() {
-        return {
-            horarioShow: false,
-            horarios: null,
-            api: Api
-        }
-    },
     methods: {
         openSchedule: function (id) {
-            // this.api.get('schedules/from/person/' + id,
-            // (res) => {
-            //     this.horarios = res;
-            //     this.ready = false
-            //     this.horarioShow = true;
-            // }, (res) => this.horarios = res);
+            // Trigger Schedule's event to parent component
+            this.$emit('open-schedule', id);
         },
         get_date: function (value) {
             let date = new Date(value);

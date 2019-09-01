@@ -3,9 +3,9 @@
     <div id="nav" v-if="user !== null">
       <router-link to="/app">Início</router-link> |
       <span v-if="user.type"><router-link to="/app/monitoria">Monitoria</router-link> | </span>
-      <span v-if="user.type == 10"><router-link to="/app/horarios">Horários</router-link> | </span>
-      <span v-if="user.type == 10"><router-link to="/app/atendimentos">Atendimentos</router-link> | </span>
-      <span v-if="user.type == 10 || user.type == 20 || user.type == 30"><router-link to="/app/relatorios">Relatórios</router-link> | </span>
+      <span v-if="user.type == constants.STUDENT_TYPE || user.type == constants.ADVISOR_TYPE"><router-link to="/app/horarios">Horários</router-link> | </span>
+      <span v-if="user.type == constants.STUDENT_TYPE"><router-link to="/app/atendimentos">Atendimentos</router-link> | </span>
+      <span v-if="user.type == constants.STUDENT_TYPE || user.type == constants.ADVISOR_TYPE || user.type == constants.COORDINATOR_TYPE"><router-link to="/app/relatorios">Relatórios</router-link> | </span>
       <a @click="signOut" href="#">Sair</a>
     </div>
     <router-view :apiData="api" :userData="user"/>
@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import constants from '../utils/constants'
+
 export default {
   name: 'dashboard',
   props: {
@@ -23,7 +25,8 @@ export default {
     return {
       firebase: this.parentData,
       api: this.apiData,
-      user: null
+      user: null,
+      constants: constants
     }
   },
   created() {
