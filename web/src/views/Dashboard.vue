@@ -8,7 +8,7 @@
       <span v-if="user.type == 10 || user.type == 20 || user.type == 30"><router-link to="/app/relatorios">Relatórios</router-link> | </span>
       <a @click="signOut" href="#">Sair</a>
     </div>
-    <router-view :parentData="firebase" :apiData="api" :userData="user"/>
+    <router-view :apiData="api" :userData="user"/>
   </div>
 </template>
 

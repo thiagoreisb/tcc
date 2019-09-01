@@ -1,11 +1,11 @@
-const Home = require('./views/Home.vue').default;
-const Login = require('./views/Login.vue').default;
-const Dashboard = require('./views/Dashboard.vue').default;
-const Attendance = require('./pages/Attendance.vue').default;
-const Contract = require('./pages/Contract.vue').default;
-const Report = require('./pages/Report.vue').default;
-const Schedule = require('./pages/Schedule.vue').default;
-const Erro = require('./pages/Error.vue').default;
+const Home = () => import('./views/Home.vue');
+const Login = () => import('./views/Login.vue');
+const Dashboard = () => import('./views/Dashboard.vue');
+const Attendance = () => import('./pages/Attendance.vue');
+const Contract = () => import('./pages/Contract.vue');
+const Report = () => import('./pages/Report.vue');
+const Schedule = () => import('./pages/Schedule.vue');
+const Erro = () => import('./pages/Error.vue');
 
 /// User role constants
 const Constants = require('./utils/constants').default;
@@ -78,7 +78,7 @@ module.exports = function (Router, firebase) {
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+        component: () => import('./views/About.vue')
       }
     ]
   })

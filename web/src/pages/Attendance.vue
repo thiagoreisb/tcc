@@ -1,16 +1,19 @@
 <template>
   <div id="attendance">
     <h1>Atendimentos</h1>
-    {{attendances}}
+    <attendances :atendimentos="attendances" :ready="status_atend"></attendances>
     <br>
     {{frequencies}}
   </div>
 </template>
 
 <script>
+import Attendances from '../components/Attendances'
+
 export default {
   name: 'attendance',
   components: {
+    Attendances
   },
   props: {
     parentData: Object,

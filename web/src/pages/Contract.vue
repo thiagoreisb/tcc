@@ -3,6 +3,7 @@
     <h1>Termos</h1>
     <monitoring v-if="user.type == constants.ADMIN_TYPE" :apiData="api"></monitoring>
     <termos v-else :termos="termos" :ready="status"></termos>
+    <loading :loading="loading"></loading>
   </div>
 </template>
 
@@ -10,33 +11,46 @@
 import Termos from '../components/Termos'
 import Monitoring from '../components/Monitoring'
 import Constants from '../utils/constants'
+import Loading from '../components/Loading'
+import constants from '../utils/constants';
+import Api from '../controllers/apiController'
 
 export default {
   name: 'contract',
   components: {
     Termos,
-    Monitoring
+    Monitoring,
+    Loading
   },
   props: {
-    parentData: Object,
-    apiData: Object,
     userData: Object
   },
   data() {
     return {
-      firebase: this.parentData,
-      api: this.apiData,
+      api: Api,
       user: this.userData,
       termos: [],
       status: false,
-      constants: Constants
+      constants: Constants,
+      loading: false
     }
   },
   methods: {
     //
   },
   created() {
-    this.api.get('monitoring/all/my/' + this.user.id, (res) => {this.status = true; this.termos = res;}, (res) => this.termos = res);
+    if (this.user.type != constants.ADMIN_TYPE) {
+      this.loading = true;
+      this.api.get('monitoring/all/my/' + this.user.id,
+      (res) => {
+        this.status = true;
+        this.termos = res;
+        this.loading = false;
+      }, (res) => {
+        // show error
+        this.loading = false;
+      });
+    }
   }
 }
 </script>

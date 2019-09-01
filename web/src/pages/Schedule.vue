@@ -2,33 +2,46 @@
   <div id="schedule">
     <h1>Horários</h1>
     <horarios :horarios="horarios" :ready="status"></horarios>
+    <loading :loading="loading"></loading>
   </div>
 </template>
 
 <script>
 import Horarios from '../components/Horarios'
+import Loading from '../components/Loading'
+import Api from '../controllers/apiController'
 
 export default {
   name: 'schedule',
   components: {
-    Horarios
+    Horarios,
+    Loading
   },
   props: {
     parentData: Object,
-    apiData: Object,
     userData: Object
   },
   data() {
     return {
       firebase: this.parentData,
-      api: this.apiData,
+      api: Api,
       user: this.userData,
       horarios: [],
-      status: false
+      status: false,
+      loading: false
     }
   },
   created() {
-    this.api.get('schedules/from/person/' + this.user.id, (res) => {this.horarios = res; this.status = true;}, (res) => this.horarios = res);
+    this.loading = true;
+    this.api.get('schedules/from/person/' + this.user.id,
+    (res) => {
+      this.horarios = res;
+      this.status = true;
+      this.loading = false;
+    }, (res) => {
+      // show error
+      this.loading = false;
+    });
   }
 }
 </script>
