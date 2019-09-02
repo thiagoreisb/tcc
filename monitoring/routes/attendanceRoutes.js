@@ -26,7 +26,7 @@ const getAttendanceRoutes = (app, crud, read) => {
             read.getAttendanceByContractId(req.params.id,(data) => res.json(data));
         })
         .get('/by/person/:id', (req, res) => {
-            read.getAttendanceByPersonId(req.params.id,(data) => res.json(data));
+            read.getAttendanceByPersonId(req.params.id,req.query.date,(data) => res.json(data));
         })
 
         .post('/save', (req, res) => {

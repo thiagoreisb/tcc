@@ -110,7 +110,7 @@ const generalRoutes = (app, api) => {
 
     app.get('/attendance/from/person/:id', (req, res) => {
         var attendances;
-        api.getFromMonitoring('/attendance/by/person/' + req.params.id)
+        api.getFromMonitoring('/attendance/by/person/' + req.params.id + (req.query.date ? '?date=' + req.query.date : ''))
             .then((data) => {
                 attendances = data;
 
