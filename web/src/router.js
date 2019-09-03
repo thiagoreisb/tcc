@@ -5,6 +5,7 @@ const Attendance = () => import('./pages/Attendance.vue');
 const Contract = () => import('./pages/Contract.vue');
 const Report = () => import('./pages/Report.vue');
 const Schedule = () => import('./pages/Schedule.vue');
+const Presence = () => import('./pages/Presence.vue')
 const Erro = () => import('./pages/Error.vue');
 
 /// User role constants
@@ -48,7 +49,7 @@ module.exports = function (Router, firebase) {
             path: 'atendimentos',
             component: Attendance,
             meta: {
-              customAuth: [Constants.MONITOR_TYPE]
+              customAuth: [Constants.MONITOR_TYPE, Constants.ADVISOR_TYPE]
             }
           },
           {
@@ -61,6 +62,13 @@ module.exports = function (Router, firebase) {
           {
             path: 'horarios',
             component: Schedule,
+            meta: {
+              customAuth: [Constants.MONITOR_TYPE, Constants.ADVISOR_TYPE]
+            }
+          },
+          {
+            path: 'presenca',
+            component: Presence,
             meta: {
               customAuth: [Constants.MONITOR_TYPE, Constants.ADVISOR_TYPE]
             }

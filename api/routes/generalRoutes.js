@@ -85,7 +85,7 @@ const generalRoutes = (app, api) => {
     });
 
     app.get('/frequency/from/person/:id', (req, res) => {
-        api.getFromMonitoring('/frequency/by/person/' + req.params.id)
+        api.getFromMonitoring('/frequency/by/person/' + req.params.id + (req.query.date ? '?date=' + req.query.date : ''))
             .then((data) => res.send(data))
             .catch((err) => res.send(err));
     });

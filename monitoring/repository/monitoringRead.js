@@ -78,7 +78,7 @@ class MonitoringRead {
         db.exec(query,[id],cb);
     }
 
-    getFrequencyByPersonId(id, cb) {
+    getFrequencyByPersonId(id, date, cb) {
         let query =
                 'select f.* from frequency f '
             +   'inner join  schedule s on s.id = f.schedule_id '
@@ -86,9 +86,10 @@ class MonitoringRead {
             +   'left join   monitor_history m on c.id = m.contract_id '
             +   'left join   advisor_history a on c.id = a.contract_id '
             +   'where (m.person_id = $1 or a.person_id = $1) '
+            +   (date ? 'and EXTRACT(month FROM f.actual_date) = EXTRACT(month FROM $2::DATE) ' : ' ')
             +   'and (CURRENT_DATE between c.start_date and c.end_date or c.situation in (0, 1)) ';
 
-        db.exec(query,[id],cb);
+        db.exec(query, date ? [id, date] : [id], cb);
     }
 
     getAttendanceByFrequencyId(id, cb) {
