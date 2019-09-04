@@ -5,8 +5,6 @@
       <button @click="changeRefMonth(false)">&lt;</button> {{nameMonth}} <button @click="changeRefMonth(true)">&gt;</button>
     </div>
     <attendances :atendimentos="attendances" :ready="status_atend"></attendances>
-    <br>
-    {{frequencies}}
     <loading :loading="loading"></loading>
   </div>
 </template>
@@ -121,7 +119,6 @@ export default {
     this.getMonth();
     
     this.getAttendance();
-    this.api.get('frequency/from/person/' + this.user.id, (res) => {this.frequencies = res; this.status_freq = true;}, (res) => this.frequencies = res);
   }
 }
 </script>
