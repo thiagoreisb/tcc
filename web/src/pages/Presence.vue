@@ -6,8 +6,11 @@
     </div>
     {{frequencies}}
     <div class="col-12">
-      <div v-for="n in 4" v-bind:key="n" class="row">
-        <work-day v-for="i in 5" v-bind:key="i" class="col"></work-day>
+      <!-- Header -->
+      <div class="row no-gutters fixed-min-width"><div v-for="i in 7" v-bind:key="i" class="col">{{weekDay(i)}}</div></div>
+      <!-- Calendar -->
+      <div v-for="n in 4" v-bind:key="n" class="row no-gutters fixed-min-width">
+        <work-day v-for="i in 7" v-bind:key="i" :day="day" class="col"></work-day>
       </div>
     </div>
     <loading :loading="loading"></loading>
@@ -36,7 +39,8 @@ export default {
       status_freq: false,
       refMonth: null,
       nameMonth: '',
-      loading: false
+      loading: false,
+      day: null
     };
   },
   methods: {
@@ -113,13 +117,44 @@ export default {
           this.loading = false;
         }
       );
+    },
+    weekDay(value) {
+      switch (value) {
+        case 1:
+          return 'Domingo'
+          break;
+        case 2:
+          return 'Segunda'
+          break;
+        case 3:
+          return 'Terça'
+          break;
+        case 4:
+          return 'Quarta'
+          break;
+        case 5:
+          return 'Quinta'
+          break;
+        case 6:
+          return 'Sexta'
+          break;
+        default:
+          return 'Sábado'
+          break;
+      }
     }
   },
   created() {
-    this.refMonth = new Date();
+    this.day = this.refMonth = new Date();
     this.getMonth();
 
     this.getFrequency();
   }
 };
 </script>
+
+<style>
+.fixed-min-width {
+  min-width: 450px;
+}
+</style>
