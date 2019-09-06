@@ -9,8 +9,8 @@
       <!-- Header -->
       <div class="row no-gutters fixed-min-width"><div v-for="i in 7" v-bind:key="i" class="col">{{weekDay(i)}}</div></div>
       <!-- Calendar -->
-      <div v-for="n in 4" v-bind:key="n" class="row no-gutters fixed-min-width">
-        <work-day v-for="i in 7" v-bind:key="i" :day="day" class="col"></work-day>
+      <div v-for="i in calendar.length" v-bind:key="i" class="row no-gutters fixed-min-width">
+        <work-day v-for="j in calendar[i-1]" v-bind:key="j" :day="j" class="col"></work-day>
       </div>
     </div>
     <loading :loading="loading"></loading>
@@ -40,7 +40,8 @@ export default {
       refMonth: null,
       nameMonth: '',
       loading: false,
-      day: null
+      day: null,
+      calendar: []
     };
   },
   methods: {
@@ -52,6 +53,7 @@ export default {
       }
       this.getMonth();
       this.getFrequency();
+      this.getCalendar();
     },
     getMonth: function() {
       switch (this.refMonth.getMonth()) {
@@ -142,12 +144,59 @@ export default {
           return 'Sábado'
           break;
       }
+    },
+    getCalendar: function() {
+      // Cleans calendar
+      this.calendar = new Array();
+      console.log(this.calendar)
+
+      let d = new Date();
+      d.setMonth(this.refMonth.getMonth());
+      d.setHours(4);
+      let lastDay = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
+      let m = [];
+
+      // Adds actual month
+      for (let index = 1; index <= lastDay; index++) {
+        d.setDate(index);
+        if(d.getDay() == 0) {
+          this.calendar.push([...m]);
+          m = [];
+        }
+        m.push(d.toString());
+      }
+      if (d.getDay() == 6) {
+        this.calendar.push([...m]);
+        m = [];
+      }
+
+      // Gets month's end and/or just the next month's first week
+      while (d.getDay() < 6) {
+        d.setDate(d.getDate() + 1);
+        m.push(d.toString());
+
+        if (d.getDay() == 6) {
+          this.calendar.push([...m]);
+          m = [];
+        }
+      }
+
+      // Gets the previous month's last week
+      d.setDate(0);d.setDate(0);
+      do {
+        this.calendar[0].unshift(d.toString());
+        d.setDate(d.getDate() - 1);
+        if (d.getDay() == 0) {
+          this.calendar[0].unshift(d.toString());
+        }
+      } while (d.getDay() > 0);
     }
   },
   created() {
-    this.day = this.refMonth = new Date();
+    this.refMonth = new Date();
+    this.day = new Date();
     this.getMonth();
-
+    this.getCalendar();
     this.getFrequency();
   }
 };

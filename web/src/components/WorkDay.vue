@@ -50,7 +50,7 @@
     </div>
     
     <div class="card " v-else @click="expand">
-      <h5 class="card-header">{{day.getDate()}}</h5>
+      <h5 class="card-header">{{dayMonth}}</h5>
     </div>
   </div>
 </template>
@@ -62,7 +62,8 @@ export default {
   },
   data() {
     return {
-      dayTitle: this.day.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' }),
+      dayMonth: new Date(this.day).getDate(),
+      dayTitle: new Date(this.day).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' }),
       saveDay: true,
       focused: false
     };
