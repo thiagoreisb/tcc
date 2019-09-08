@@ -16,7 +16,7 @@ class Frequency {
         this.end = frequency.end;
         this.observation = frequency.observation;
         this.status = frequency.status;
-        this.class_id = frequency.class_id;
+        this.classroom_id = frequency.classroom_id;
         this.schedule_id = frequency.schedule_id;
     }
 

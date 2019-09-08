@@ -16,7 +16,7 @@ class Schedule {
         this.observation = schedule.observation;
         this.situation = schedule.situation;
         this.activity = schedule.activity;
-        this.class_id = schedule.class_id;
+        this.classroom_id = schedule.classroom_id;
         this.contract_id = schedule.contract_id;
     }
 
