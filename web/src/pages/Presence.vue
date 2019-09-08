@@ -10,7 +10,7 @@
       <div class="row no-gutters fixed-min-width"><div v-for="i in 7" v-bind:key="i" class="col">{{weekDay(i)}}</div></div>
       <!-- Calendar -->
       <div v-for="i in calendar.length" v-bind:key="i" class="row no-gutters fixed-min-width">
-        <work-day v-for="j in calendar[i-1]" v-bind:key="j" :day="j" class="col"></work-day>
+        <work-day v-for="j in calendar[i-1]" v-bind:key="j" :day="j" :month="refMonth.getMonth()" class="col"></work-day>
       </div>
     </div>
     <loading :loading="loading"></loading>
@@ -148,11 +148,10 @@ export default {
     getCalendar: function() {
       // Cleans calendar
       this.calendar = new Array();
-      console.log(this.calendar)
 
       let d = new Date();
       d.setMonth(this.refMonth.getMonth());
-      d.setHours(4);
+      d.setHours(5);
       let lastDay = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate();
       let m = [];
 
@@ -182,14 +181,21 @@ export default {
       }
 
       // Gets the previous month's last week
-      d.setDate(0);d.setDate(0);
-      do {
+      d.setFullYear(this.refMonth.getFullYear());
+      d.setMonth(this.refMonth.getMonth());
+      d.setDate(0);
+      if (d.getDay() == 0) {
         this.calendar[0].unshift(d.toString());
-        d.setDate(d.getDate() - 1);
-        if (d.getDay() == 0) {
+      }
+      else {
+        do {
           this.calendar[0].unshift(d.toString());
-        }
-      } while (d.getDay() > 0);
+          d.setDate(d.getDate() - 1);
+          if (d.getDay() == 0) {
+            this.calendar[0].unshift(d.toString());
+          }
+        } while (d.getDay() > 0);
+      }
     }
   },
   created() {

@@ -49,7 +49,7 @@
       </div>
     </div>
     
-    <div class="card " v-else @click="expand">
+    <div class="card" v-bind:class="getDayCSS" v-else @click="expand">
       <h5 class="card-header">{{dayMonth}}</h5>
     </div>
   </div>
@@ -58,7 +58,8 @@
 <script>
 export default {
   props: {
-    day: null
+    day: null,
+    month: null
   },
   data() {
     return {
@@ -71,6 +72,15 @@ export default {
   methods: {
     expand() {
       this.focused = !this.focused;
+    }
+  },
+  computed: {
+    getDayCSS() {
+      if (new Date(this.day).getMonth() == this.month) {
+        return 'actual-month';
+      } else {
+        return 'other-month';
+      }
     }
   }
 };
@@ -87,5 +97,20 @@ export default {
     background-color: rgb(199, 209, 203);
     overflow-x: hidden;
     transition: 0.5s;
-    }
+  }
+
+  .other-month {
+    background-color: #7f8da1;
+    color: white;
+  }
+
+  .actual-month {
+    background-color: #8db8f2;
+    color: white;
+  }
+
+  .event-day {
+    background-color: #1474f5;
+    color: white;
+  }
 </style>
