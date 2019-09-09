@@ -63,8 +63,8 @@ export default {
   },
   data() {
     return {
-      dayMonth: new Date(this.day).getDate(),
-      dayTitle: new Date(this.day).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' }),
+      dayMonth: new Date(this.day[0].actual_date).getDate(),
+      dayTitle: new Date(this.day[0].actual_date).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' }),
       saveDay: true,
       focused: false
     };
@@ -76,7 +76,7 @@ export default {
   },
   computed: {
     getDayCSS() {
-      if (new Date(this.day).getMonth() == this.month) {
+      if (new Date(this.day[0].actual_date).getMonth() == this.month) {
         return 'actual-month';
       } else {
         return 'other-month';

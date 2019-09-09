@@ -10,7 +10,7 @@
       <div class="row no-gutters fixed-min-width"><div v-for="i in 7" v-bind:key="i" class="col">{{weekDay(i)}}</div></div>
       <!-- Calendar -->
       <div v-for="i in calendar.length" v-bind:key="i" class="row no-gutters fixed-min-width">
-        <work-day v-for="j in calendar[i-1]" v-bind:key="j" :day="j" :month="refMonth.getMonth()" class="col"></work-day>
+        <work-day v-for="j in calendar[i-1]" v-bind:key="j[0].actual_date" :day="j" :month="refMonth.getMonth()" class="col"></work-day>
       </div>
     </div>
     <loading :loading="loading"></loading>
@@ -53,7 +53,6 @@ export default {
       }
       this.getMonth();
       this.getFrequency();
-      this.getCalendar();
     },
     getMonth: function() {
       switch (this.refMonth.getMonth()) {
@@ -110,9 +109,12 @@ export default {
       this.api.get(
         'frequency/from/person/' + this.user.id + '?date=' + when,
         res => {
-          this.frequencies = res;
-          this.status_freq = true;
-          this.loading = false;
+          if (res.status != undefined && res.status != null) {
+            this.frequencies = res;
+            this.status_freq = true;
+            this.loading = false;
+            this.getCalendar();
+          }
         },
         res => {
           this.frequencies = res;
@@ -158,11 +160,21 @@ export default {
       // Adds actual month
       for (let index = 1; index <= lastDay; index++) {
         d.setDate(index);
+
         if(d.getDay() == 0) {
           this.calendar.push([...m]);
           m = [];
         }
-        m.push(d.toString());
+        
+        let eventDay = this.frequencies.status.filter( el => 
+          new Date(el.actual_date).getDate() == index && new Date(el.actual_date).getMonth() == this.refMonth.getMonth() );
+        
+        if (eventDay.length == 0) {
+          eventDay.push({
+            "actual_date": d.toString()
+          });
+        }
+        m.push(eventDay);
       }
       if (d.getDay() == 6) {
         this.calendar.push([...m]);
@@ -172,7 +184,9 @@ export default {
       // Gets month's end and/or just the next month's first week
       while (d.getDay() < 6) {
         d.setDate(d.getDate() + 1);
-        m.push(d.toString());
+        m.push([{
+          "actual_date": d.toString()
+        }]);
 
         if (d.getDay() == 6) {
           this.calendar.push([...m]);
@@ -185,14 +199,20 @@ export default {
       d.setMonth(this.refMonth.getMonth());
       d.setDate(0);
       if (d.getDay() == 0) {
-        this.calendar[0].unshift(d.toString());
+        this.calendar[0].unshift([{
+          "actual_date": d.toString()
+        }]);
       }
       else {
         do {
-          this.calendar[0].unshift(d.toString());
+          this.calendar[0].unshift([{
+            "actual_date": d.toString()
+          }]);
           d.setDate(d.getDate() - 1);
           if (d.getDay() == 0) {
-            this.calendar[0].unshift(d.toString());
+            this.calendar[0].unshift([{
+              "actual_date": d.toString()
+            }]);
           }
         } while (d.getDay() > 0);
       }
@@ -202,7 +222,6 @@ export default {
     this.refMonth = new Date();
     this.day = new Date();
     this.getMonth();
-    this.getCalendar();
     this.getFrequency();
   }
 };
