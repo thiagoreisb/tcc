@@ -4,47 +4,56 @@
       <div class="col-6 mx-auto h-100">
         <div class="card justify-content-center">
           <h3 class="card-header">Dia {{dayTitle}}<i @click="expand" class="btn btn-secondary float-right">X</i></h3>
-          <div class="card-body">
-            <div class="col-sm-12">
-              <div class="form-group row">
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="entranceFreq">Entrada</span>
+          <div v-if="day[0].id !== undefined">
+            <div v-for="(value, index) in day" v-bind:key="index">
+              <div v-if="!eventShowControl[index].show" class="card-body event-day" @click="expandEvent(index)">{{getHour(value.start)}} - {{getHour(value.end)}}</div>
+              <div v-else>
+                <h5 class="card-header event-day" @click="expandEvent(index)">{{getHour(value.start)}} - {{getHour(value.end)}}</h5>
+                <div class="card-body">
+                  <div class="col-sm-12">
+                    <div class="form-group row">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="entranceFreq">Entrada</span>
+                          </div>
+                          <input type="time" class="form-control" v-model="value.start">
+                        </div>
                     </div>
-                    <input type="time" class="form-control">
-                  </div>
-              </div>
 
-              <div class="form-group row">
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="exitFreq">Saída</span>
+                    <div class="form-group row">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="exitFreq">Saída</span>
+                          </div>
+                          <input type="time" class="form-control" v-model="value.end">
+                        </div>
                     </div>
-                    <input type="time" class="form-control">
-                  </div>
-              </div>
 
-              <div class="form-group row">
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="classroomFreq">Sala</span>
+                    <div class="form-group row">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="classroomFreq">Sala</span>
+                          </div>
+                          <input type="number" class="form-control" placeholder="Número da sala" v-model="value.classroom_id">
+                        </div>
                     </div>
-                    <input type="number" class="form-control" placeholder="Número da sala">
-                  </div>
-              </div>
 
-              <div class="form-group row">
-                  <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text" id="observationFreq">Observação</span>
+                    <div class="form-group row">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="observationFreq">Observação</span>
+                          </div>
+                          <textarea class="form-control" placeholder="Ex.: Exercícios feitos" v-model="value.observation"></textarea>
+                        </div>
                     </div>
-                    <textarea class="form-control" placeholder="Ex.: Exercícios feitos"></textarea>
+                    <button v-if="saveDay" class="btn btn-primary">Salvar horário</button>
+                    <button v-if="saveDay" class="btn btn-primary" @click="removeFrequency(index)">Apagar</button>
                   </div>
+                </div>
               </div>
-              <button v-if="saveDay" class="btn btn-primary">Salvar horário</button>
-              <button v-if="saveDay" class="btn btn-primary">Editar horário</button>
             </div>
           </div>
+          <button class="btn btn-secondary" @click="addFrequency()">Novo horário</button>
         </div>
       </div>
     </div>
@@ -65,23 +74,65 @@ export default {
     return {
       dayMonth: new Date(this.day[0].actual_date).getDate(),
       dayTitle: new Date(this.day[0].actual_date).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' }),
+      eventShowControl: [],
       saveDay: true,
       focused: false
     };
   },
   methods: {
+    removeFrequency(index) {
+      if (this.day.length == 1) {
+        this.day.push({actual_date: this.day[0].actual_date});
+      }
+      this.day = this.day.splice(index, 1);
+      this.eventShowControl = this.eventShowControl.splice(index, 1);
+    },
+    addFrequency() {
+      let newDay = {
+        actual_date: this.day[0].actual_date,
+        classroom_id: null,
+        end: null,
+        expected_date: null,
+        id: null,
+        observation: null,
+        schedule_id: null,
+        start: null,
+        status: null
+      };
+
+      if (this.day[0].id === undefined) {
+        this.day.pop();
+      }
+      
+      this.day.push(newDay);
+      this.eventShowControl.push({show: false});
+    },
+    getHour(time) {
+      if (time != undefined && time.length > 5) {
+        return time.substring(0, 5);
+      }
+      return time;
+    },
+    expandEvent(value) {
+      this.eventShowControl[value].show = !this.eventShowControl[value].show;
+    },
     expand() {
       this.focused = !this.focused;
     }
   },
   computed: {
     getDayCSS() {
-      if (new Date(this.day[0].actual_date).getMonth() == this.month) {
+      if (this.day[0].id != undefined) {
+        return 'event-day';
+      } else if (new Date(this.day[0].actual_date).getMonth() == this.month) {
         return 'actual-month';
-      } else {
+      }else {
         return 'other-month';
       }
     }
+  },
+  created() {
+    this.day.forEach((el, index) => this.eventShowControl.push({show: false}));
   }
 };
 </script>
