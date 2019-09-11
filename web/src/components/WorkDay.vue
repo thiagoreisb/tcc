@@ -47,7 +47,7 @@
                         </div>
                     </div>
                     <button v-if="saveDay" class="btn btn-primary">Salvar horário</button>
-                    <button v-if="saveDay" class="btn btn-primary" @click="removeFrequency(index)">Apagar</button>
+                    <button v-if="value.id === undefined || value.id === null" class="btn btn-primary" @click="removeFrequency(index)">Apagar</button>
                   </div>
                 </div>
               </div>
@@ -67,13 +67,14 @@
 <script>
 export default {
   props: {
-    day: null,
+    dayRef: null,
     month: null
   },
   data() {
     return {
-      dayMonth: new Date(this.day[0].actual_date).getDate(),
-      dayTitle: new Date(this.day[0].actual_date).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' }),
+      dayMonth: new Date(this.dayRef[0].actual_date).getDate(),
+      dayTitle: new Date(this.dayRef[0].actual_date).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' }),
+      day: [...this.dayRef],
       eventShowControl: [],
       saveDay: true,
       focused: false
@@ -81,11 +82,14 @@ export default {
   },
   methods: {
     removeFrequency(index) {
-      if (this.day.length == 1) {
-        this.day.push({actual_date: this.day[0].actual_date});
+      let hint = this.day[0].actual_date;
+
+      this.day.splice(index, 1);
+      this.eventShowControl.splice(index, 1);
+      
+      if (this.day.length == 0) {
+        this.day.push({actual_date: hint});
       }
-      this.day = this.day.splice(index, 1);
-      this.eventShowControl = this.eventShowControl.splice(index, 1);
     },
     addFrequency() {
       let newDay = {

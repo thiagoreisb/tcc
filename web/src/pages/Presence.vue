@@ -4,13 +4,12 @@
     <div>
       <button @click="changeRefMonth(false)">&lt;</button> {{nameMonth}} <button @click="changeRefMonth(true)">&gt;</button>
     </div>
-    {{frequencies}}
     <div class="col-12">
       <!-- Header -->
       <div class="row no-gutters fixed-min-width"><div v-for="i in 7" v-bind:key="i" class="col">{{weekDay(i)}}</div></div>
       <!-- Calendar -->
       <div v-for="i in calendar.length" v-bind:key="i" class="row no-gutters fixed-min-width">
-        <work-day v-for="j in calendar[i-1]" v-bind:key="j[0].actual_date" :day="j" :month="refMonth.getMonth()" class="col"></work-day>
+        <work-day v-for="j in calendar[i-1]" v-bind:key="j[0].actual_date" :dayRef="j" :month="refMonth.getMonth()" class="col"></work-day>
       </div>
     </div>
     <loading :loading="loading"></loading>
@@ -21,6 +20,7 @@
 import Loading from "../components/Loading";
 import Api from "../controllers/apiController";
 import WorkDay from "../components/WorkDay"
+import DT from "../utils/dt"
 
 export default {
   name: "presence",
@@ -40,8 +40,8 @@ export default {
       refMonth: null,
       nameMonth: '',
       loading: false,
-      day: null,
-      calendar: []
+      calendar: [],
+      dt: new DT()
     };
   },
   methods: {
@@ -166,8 +166,15 @@ export default {
           m = [];
         }
         
-        let eventDay = this.frequencies.status.filter( el => 
-          new Date(el.actual_date).getDate() == index && new Date(el.actual_date).getMonth() == this.refMonth.getMonth() );
+        let eventDay = this.frequencies.status.filter( el => {
+          // Normalize date
+          el.actual_date = this.dt.stringToLocal(el.actual_date)
+          let normDate = new Date(el.actual_date);
+
+          if(normDate.getDate() == index && normDate.getMonth() == this.refMonth.getMonth()){
+            return el;
+          }
+        });
         
         if (eventDay.length == 0) {
           eventDay.push({
@@ -220,7 +227,6 @@ export default {
   },
   created() {
     this.refMonth = new Date();
-    this.day = new Date();
     this.getMonth();
     this.getFrequency();
   }
