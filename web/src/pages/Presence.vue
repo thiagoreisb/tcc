@@ -9,7 +9,8 @@
       <div class="row no-gutters fixed-min-width"><div v-for="i in 7" v-bind:key="i" class="col">{{weekDay(i)}}</div></div>
       <!-- Calendar -->
       <div v-for="i in calendar.length" v-bind:key="i" class="row no-gutters fixed-min-width">
-        <work-day v-for="j in calendar[i-1]" v-bind:key="j[0].actual_date" :dayRef="j" :month="refMonth.getMonth()" class="col"></work-day>
+        <work-day v-for="j in calendar[i-1]" v-bind:key="j[0].actual_date" :dayRef="j"
+        :month="refMonth.getMonth()" :isUserMonitor="user.type == c.MONITOR_TYPE" class="col"></work-day>
       </div>
     </div>
     <loading :loading="loading"></loading>
@@ -17,6 +18,7 @@
 </template>
 
 <script>
+import Constantes from "../utils/constants"
 import Loading from "../components/Loading";
 import Api from "../controllers/apiController";
 import WorkDay from "../components/WorkDay"
@@ -33,6 +35,7 @@ export default {
   },
   data() {
     return {
+      c: Constantes,
       user: this.userData,
       api: Api,
       frequencies: null,

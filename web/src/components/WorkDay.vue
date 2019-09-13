@@ -16,7 +16,7 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="entranceFreq">Entrada</span>
                           </div>
-                          <input type="time" class="form-control" v-model="value.start">
+                          <input type="time" class="form-control" v-model="value.start" :readonly="!isMonitor">
                         </div>
                     </div>
 
@@ -25,7 +25,7 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="exitFreq">Saída</span>
                           </div>
-                          <input type="time" class="form-control" v-model="value.end">
+                          <input type="time" class="form-control" v-model="value.end" :readonly="!isMonitor">
                         </div>
                     </div>
 
@@ -34,7 +34,7 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="classroomFreq">Sala</span>
                           </div>
-                          <input type="number" class="form-control" placeholder="Número da sala" v-model="value.classroom_id">
+                          <input type="number" class="form-control" placeholder="Número da sala" v-model="value.classroom_id" :readonly="!isMonitor">
                         </div>
                     </div>
 
@@ -43,17 +43,17 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="observationFreq">Observação</span>
                           </div>
-                          <textarea class="form-control" placeholder="Ex.: Exercícios feitos" v-model="value.observation"></textarea>
+                          <textarea class="form-control" placeholder="Ex.: Exercícios feitos" v-model="value.observation" :readonly="!isMonitor"></textarea>
                         </div>
                     </div>
-                    <button v-if="saveDay" class="btn btn-primary">Salvar horário</button>
-                    <button v-if="value.id === undefined || value.id === null" class="btn btn-primary" @click="removeFrequency(index)">Apagar</button>
+                    <button v-if="isMonitor && saveDay" class="btn btn-primary">Salvar horário</button>
+                    <button v-if="isMonitor && (value.id === undefined || value.id === null)" class="btn btn-primary" @click="removeFrequency(index)">Apagar</button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <button class="btn btn-secondary" @click="addFrequency()">Novo horário</button>
+          <button v-if="isMonitor" class="btn btn-secondary" @click="addFrequency()">Novo horário</button>
         </div>
       </div>
     </div>
@@ -68,7 +68,8 @@
 export default {
   props: {
     dayRef: null,
-    month: null
+    month: null,
+    isUserMonitor: null
   },
   data() {
     return {
@@ -77,7 +78,8 @@ export default {
       day: [...this.dayRef],
       eventShowControl: [],
       saveDay: true,
-      focused: false
+      focused: false,
+      isMonitor: this.isUserMonitor
     };
   },
   methods: {
