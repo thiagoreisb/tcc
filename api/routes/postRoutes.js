@@ -1,6 +1,34 @@
 'use strict';
 
 const postRoutes = (app, api) => {
+    app.post('/new/schedule', (req, res) => {
+        var data = {...req.body};
+
+        if (data.person_id !== undefined) {
+            api.getFromMonitoring('/contract/actual/my/' + data.person_id)
+                .then(r => {
+                    let contract = r.status[0].id;
+
+                    if (contract == undefined) {
+                        return Promise.resolve(1);
+                    } else {
+                        data.contract_id = contract;
+                        delete data.person_id;
+
+                        return api.postMonitoring('/schedule/save', data);
+                    }
+                }).then(r => {
+                    if (r === 1) {
+                        res.send({status: 'err: schedule not created'});
+                    } else {
+                        res.send(r);
+                    }
+                }).catch(err => res.send(err))
+        } else {
+            res.send(data);
+        }
+    });
+
     app.post('/new/monitoring', (req, res) => {
         /// Retriving request data
         var start = req.body.start_date;

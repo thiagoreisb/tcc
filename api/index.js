@@ -20,6 +20,7 @@ app.use(bodyParser.json());
 // routes
 require('./routes/generalRoutes')(app, api);
 require('./routes/postRoutes')(app, api);
+require('./routes/putRoutes')(app, api);
 
 app.listen(process.env.PORT || 3000, () => {
     console.log('Server up!');

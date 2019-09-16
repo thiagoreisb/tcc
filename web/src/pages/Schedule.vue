@@ -1,7 +1,7 @@
 <template>
   <div id="schedule">
     <h1>Horários</h1>
-    <horarios :horarios="horarios" :ready="status"></horarios>
+    <horarios :horarios="horarios" :ready="status" :userData="user"></horarios>
     <loading :loading="loading"></loading>
   </div>
 </template>
