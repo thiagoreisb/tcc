@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button v-if="!showEdit" @click="toggleEdition()" class="btn btn-primary">Adicionar</button>
+    <button v-if="!showEdit && !!user && user.type == constants.MONITOR_TYPE" @click="toggleEdition()" class="btn btn-primary">Adicionar</button>
     <br />
     <div v-if="showEdit" class="container">
       <div class="row">
@@ -10,8 +10,8 @@
               <div class="input-group-prepend">
                 <span class="input-group-text" id="entranceSched">Entrada - Saída</span>
               </div>
-              <input type="time" class="form-control" v-model="schedule.start" />
-              <input type="time" class="form-control" v-model="schedule.end" />
+              <input type="time" class="form-control" v-model="schedule.start" v-bind:readonly="user.type == constants.ADVISOR_TYPE"/>
+              <input type="time" class="form-control" v-model="schedule.end" v-bind:readonly="user.type == constants.ADVISOR_TYPE"/>
             </div>
           </div>
         </div>
@@ -23,7 +23,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text" id="weekDaySched">Dia</span>
               </div>
-              <select class="custom-select" v-model="schedule.week_day">
+              <select class="custom-select" v-model="schedule.week_day" v-if="user.type != constants.ADVISOR_TYPE">
                 <option value="0">Domingo</option>
                 <option value="1" selected>Segunda</option>
                 <option value="2">Terça</option>
@@ -32,6 +32,7 @@
                 <option value="5">Sexta</option>
                 <option value="6">Sábado</option>
               </select>
+              <input class="custom-select" v-else v-bind:value="week_day(schedule.week_day)" readonly>
             </div>
           </div>
         </div>
@@ -41,11 +42,12 @@
               <div class="input-group-prepend">
                 <span class="input-group-text" id="activitySched">Atividade</span>
               </div>
-              <select class="custom-select" v-model="schedule.activity">
+              <select class="custom-select" v-model="schedule.activity" v-if="user.type != constants.ADVISOR_TYPE">
                 <option value="0" selected>Atendimento</option>
                 <option value="1">Preparação</option>
                 <option value="2">Elaboração</option>
               </select>
+              <input class="custom-select" v-else v-bind:value="activity(schedule.activity)" readonly>
             </div>
           </div>
         </div>
@@ -60,6 +62,7 @@
                 type="number"
                 placeholder="Número da sala"
                 class="form-control"
+                v-bind:readonly="user.type == constants.ADVISOR_TYPE"
               />
             </div>
           </div>
@@ -72,12 +75,12 @@
               <div class="input-group-prepend">
                 <span class="input-group-text" id="obsrevationSched">Observation</span>
               </div>
-              <textarea v-model="schedule.observation" class="form-control"></textarea>
+              <textarea v-model="schedule.observation" class="form-control" v-bind:readonly="user.type == constants.ADVISOR_TYPE"></textarea>
             </div>
           </div>
         </div>
       </div>
-      <div class="row">
+      <div class="row" v-if="user.type != constants.ADVISOR_TYPE">
         <div class="col-sm-6">
           <button class="btn btn-primary" @click="saveSchedule">{{saveButtonTitle}}</button>
         </div>
@@ -85,14 +88,25 @@
           <button class="btn btn-primary" @click="toggleEdition(false)">Cancelar</button>
         </div>
       </div>
-      <div v-if="!!schedule.id">
+      <div v-else class="row">
+        <div class="col-sm-4">
+          <button class="btn btn-outline-primary" @click="aprroveRejectSchedule(true)">Aprovar</button>
+        </div>
+        <div class="col-sm-4">
+          <button class="btn btn-outline-secondary" @click="toggleEdition(false)">Cancelar</button>
+        </div>
+        <div class="col-sm-4">
+          <button class="btn btn-outline-danger" @click="aprroveRejectSchedule(false)">Recusar</button>
+        </div>
+    </div>
+      <!-- <div v-if="!!schedule.id">
         <br />
         <div class="row">
           <div class="col-sm-12">
             <button class="btn btn-danger">Excluir horário</button>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
     <br />
     <table v-if="ready" class="table table-hover">
@@ -104,7 +118,7 @@
           <th scope="col">Situação</th>
           <th scope="col">Atividade</th>
           <th scope="col">Observação</th>
-          <th scope="col">Ações</th>
+          <th scope="col" v-if="!!user">Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -115,8 +129,8 @@
           <td>{{schedules_situation(horario.situation)}}</td>
           <td>{{activity(horario.activity)}}</td>
           <td>{{horario.observation ? horario.observation : ""}}</td>
-          <td>
-            <button @click="editSchedule(horario)" class="btn btn-secondary">Editar</button>
+          <td v-if="!!user">
+            <button v-if="horario.situation == 0 || (user.type == constants.MONITOR_TYPE && horario.situation != 2)" @click="editSchedule(horario)" class="btn btn-secondary">Editar</button>
           </td>
         </tr>
       </tbody>
@@ -128,6 +142,7 @@
 <script>
 import Api from "../controllers/apiController";
 import Toast from "../components/Toast";
+import constants from '../utils/constants'
 
 export default {
   components: {
@@ -141,6 +156,7 @@ export default {
   data() {
     return {
       api: Api,
+      constants: constants,
       showEdit: false,
       saveButtonTitle: "",
       schedule: {},
@@ -151,6 +167,11 @@ export default {
     };
   },
   methods: {
+    aprroveRejectSchedule(approved) {
+      this.schedule.situation = approved ? "1" : "2";
+      this.saveActualSchedule();
+      this.toggleEdition(false);
+    },
     saveSchedule() {
       if (this.isDataRight()) {
         if (!this.schedule.id) {
@@ -172,22 +193,29 @@ export default {
                 $(".toast").toast("show");
               });
         } else {
-          // Salvar horário
-          this.api.put("update/schedule", this.schedule)
-              .then(res => {
-                this.toastType = 1;
-                this.toastBody = "Salvo com sucesso!"
-                $(".toast").toast("show");
-              })
-              .catch(res => {
-                this.toastType = 2;
-                this.toastBody = "Erro ao salvar"
-                $(".toast").toast("show");
-              });
+          // Atualizar horário existente
+          this.schedule.situation = "0";
+          this.saveActualSchedule();
         }
       } else {
-        console.log("Insira os dados corretamente");
+        this.toastType = 2;
+        this.toastBody = "Insira os dados corretamente"
+        $(".toast").toast("show");
       }
+    },
+    saveActualSchedule() {
+      // Salvar horário
+      this.api.put("update/schedule", this.schedule)
+          .then(res => {
+            this.toastType = 1;
+            this.toastBody = "Salvo com sucesso!"
+            $(".toast").toast("show");
+          })
+          .catch(res => {
+            this.toastType = 2;
+            this.toastBody = "Erro ao salvar"
+            $(".toast").toast("show");
+          });
     },
     isDataRight() {
       if (!this.schedule.start || !this.schedule.end) {
