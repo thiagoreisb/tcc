@@ -1,13 +1,18 @@
 <template>
-  <div id="toast" class="toast toast-position" v-bind:class="getCSS" data-autohide="true" v-bind:data-delay="timeout">
-    <div class="toast-header">
-      <strong class="mr-auto text-primary">
-        <i class="fas fa-info"></i>
-        {{title}}
-      </strong>
-      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+  <div class="toast-position">
+    <div class="toast" v-bind:class="getCSS" data-autohide="true" v-bind:data-delay="timeout">
+      <div v-if="!!this.title" class="toast-header">
+        <strong class="mr-auto text-primary">
+          <i class="fas fa-info"></i>
+          {{title}}
+        </strong>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+      </div>
+      <div v-else class="text-right">
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+      </div>
+      <div class="toast-body">{{body}}</div>
     </div>
-    <div class="toast-body">{{body}}</div>
   </div>
 </template>
 
@@ -43,6 +48,7 @@ export default {
 <style>
 .toast-position {
   position: fixed;
+  width: 200px;
   top: 0;
   right: 0;
 }

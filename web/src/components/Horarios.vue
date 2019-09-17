@@ -145,8 +145,8 @@ export default {
       saveButtonTitle: "",
       schedule: {},
       user: this.userData,
-      toastTitle: "Título",
-      toastBody: "Teste",
+      toastTitle: "",
+      toastBody: "",
       toastType: 1
     };
   },
@@ -169,16 +169,19 @@ export default {
           //         //
           //     });
         } else {
-          console.log(this.schedule);
-          $("#toast").toast("show");
+          // console.log(this.schedule);
           // Salvar horário
-          // this.api.put("/update/schedule", JSON.stringify(this.schedule))
-          //     .then(res => {
-          //         //
-          //     })
-          //     .catch(res => {
-          //         //
-          //     });
+          this.api.put("update/schedule", this.schedule)
+              .then(res => {
+                this.toastType = 1;
+                this.toastBody = "Salvo com sucesso!"
+                  $(".toast").toast("show");
+              })
+              .catch(res => {
+                  this.toastType = 2;
+                  this.toastBody = "Erro ao salvar"
+                  $(".toast").toast("show");
+              });
         }
       } else {
         console.log("Insira os dados corretamente");
