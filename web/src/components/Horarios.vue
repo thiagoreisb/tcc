@@ -155,32 +155,34 @@ export default {
       if (this.isDataRight()) {
         if (!this.schedule.id) {
           this.schedule.person_id = this.user.id;
-          this.schedule.situation = 0;
+          this.schedule.situation = "0";
           let obs = this.schedule.observation;
-          this.schedule.observation = obs === undefined ? "" : obs;
+          this.schedule.observation = obs === undefined ? "" : obs.toString();
 
-          console.log(JSON.stringify(this.schedule));
           // Adcionar novo horário
-          // this.api.post("/new/schedule", JSON.stringify(this.schedule))
-          //     .then(res => {
-          //         //
-          //     })
-          //     .catch(res => {
-          //         //
-          //     });
+          this.api.post("new/schedule", this.schedule)
+              .then(res => {
+                this.toastType = 1;
+                this.toastBody = "Criada com sucesso!"
+                $(".toast").toast("show");
+              })
+              .catch(res => {
+                this.toastType = 2;
+                this.toastBody = "Erro ao salvar"
+                $(".toast").toast("show");
+              });
         } else {
-          // console.log(this.schedule);
           // Salvar horário
           this.api.put("update/schedule", this.schedule)
               .then(res => {
                 this.toastType = 1;
                 this.toastBody = "Salvo com sucesso!"
-                  $(".toast").toast("show");
+                $(".toast").toast("show");
               })
               .catch(res => {
-                  this.toastType = 2;
-                  this.toastBody = "Erro ao salvar"
-                  $(".toast").toast("show");
+                this.toastType = 2;
+                this.toastBody = "Erro ao salvar"
+                $(".toast").toast("show");
               });
         }
       } else {
