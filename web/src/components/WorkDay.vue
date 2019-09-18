@@ -3,7 +3,7 @@
     <div class="overlay" v-if="focused">
       <div class="col-6 mx-auto h-100">
         <div class="card justify-content-center">
-          <h3 class="card-header">Dia {{dayTitle}}<i @click="expand" class="btn btn-secondary float-right">X</i></h3>
+          <h4 class="card-header">Dia {{dayTitle}}<i @click="expand" class="btn btn-secondary float-right">X</i></h4>
           <div v-if="day[0].id !== undefined">
             <div v-for="(value, index) in day" v-bind:key="index">
               <div v-if="!eventShowControl[index].show" class="card-body event-day" @click="expandEvent(index)">{{getHour(value.start)}} - {{getHour(value.end)}}</div>
@@ -41,6 +41,17 @@
                     <div class="form-group row">
                         <div class="input-group mb-3">
                           <div class="input-group-prepend">
+                            <span class="input-group-text" id="scheduleIdFreq">Horário</span>
+                          </div>
+                          <select class="custom-select">
+                            <option v-for="h in horariosDoDia" v-bind:key="h.id" v-bind:value="h.id" v-bind:selected="value.schedule_id == h.id">{{week_day(h.week_day)}}, {{h.start}} - {{h.end}}, {{activity(h.activity)}}</option>
+                          </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
                             <span class="input-group-text" id="observationFreq">Observação</span>
                           </div>
                           <textarea class="form-control" placeholder="Ex.: Exercícios feitos" v-model="value.observation" :readonly="!isMonitor"></textarea>
@@ -67,12 +78,14 @@
 <script>
 export default {
   props: {
+    horarios: null,
     dayRef: null,
     month: null,
     isUserMonitor: null
   },
   data() {
     return {
+      horariosValidos: this.horarios.status.filter(el => el.situation == 1),
       dayMonth: new Date(this.dayRef[0].actual_date).getDate(),
       dayTitle: new Date(this.dayRef[0].actual_date).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' }),
       day: [...this.dayRef],
@@ -124,6 +137,34 @@ export default {
     },
     expand() {
       this.focused = !this.focused;
+    },
+    activity(type) {
+      switch (type) {
+        case 0:
+          return "ATEND";
+        case 1:
+          return "PREP";
+        case 2:
+          return "ELAB";
+      }
+    },
+    week_day(day) {
+      switch (day) {
+        case 0:
+          return "Domingo";
+        case 1:
+          return "Segunda";
+        case 2:
+          return "Terça";
+        case 3:
+          return "Quarta";
+        case 4:
+          return "Quinta";
+        case 5:
+          return "Sexta";
+        case 6:
+          return "Sábado";
+      }
     }
   },
   computed: {
@@ -135,6 +176,9 @@ export default {
       }else {
         return 'other-month';
       }
+    },
+    horariosDoDia() {
+      return [...this.horariosValidos];
     }
   },
   created() {

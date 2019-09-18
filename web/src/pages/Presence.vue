@@ -10,7 +10,8 @@
       <!-- Calendar -->
       <div v-for="i in calendar.length" v-bind:key="i" class="row no-gutters fixed-min-width">
         <work-day v-for="j in calendar[i-1]" v-bind:key="j[0].actual_date" :dayRef="j"
-        :month="refMonth.getMonth()" :isUserMonitor="user.type == c.MONITOR_TYPE" class="col"></work-day>
+        :month="refMonth.getMonth()" :isUserMonitor="user.type == c.MONITOR_TYPE" class="col"
+        :horarios="horarios"></work-day>
       </div>
     </div>
     <loading :loading="loading"></loading>
@@ -39,6 +40,7 @@ export default {
       user: this.userData,
       api: Api,
       frequencies: null,
+      horarios: null,
       status_freq: false,
       refMonth: null,
       nameMonth: '',
@@ -109,21 +111,30 @@ export default {
         + (d < 10 ? '0' + d : d);
 
       this.loading = true;
+      // Horários da grade
       this.api.get(
-        'frequency/from/person/' + this.user.id + '?date=' + when,
-        res => {
-          if (res.status != undefined && res.status != null) {
-            this.frequencies = res;
-            this.status_freq = true;
-            this.loading = false;
-            this.getCalendar();
-          }
-        },
-        res => {
-          this.frequencies = res;
+        'schedules/from/person/' + this.user.id,
+        (res) => {
+          this.horarios = res;
+          // Frequências
+          this.api.get(
+            'frequency/from/person/' + this.user.id + '?date=' + when,
+            res => {
+              if (res.status != undefined && res.status != null) {
+                this.frequencies = res;
+                this.status_freq = true;
+                this.loading = false;
+                this.getCalendar();
+              }
+            },
+            res => {
+              this.loading = false;
+            }
+          );
+        }, (res) => {
+          // show error
           this.loading = false;
-        }
-      );
+      });
     },
     weekDay(value) {
       switch (value) {
