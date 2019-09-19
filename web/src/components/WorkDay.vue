@@ -44,7 +44,7 @@
                             <span class="input-group-text" id="scheduleIdFreq">Horário</span>
                           </div>
                           <select class="custom-select">
-                            <option v-for="h in horariosDoDia" v-bind:key="h.id" v-bind:value="h.id" v-bind:selected="value.schedule_id == h.id">{{week_day(h.week_day)}}, {{h.start}} - {{h.end}}, {{activity(h.activity)}}</option>
+                            <option v-for="h in horariosDoDia" v-bind:key="h.id" v-bind:value="h.id" v-bind:selected="value.schedule_id == h.id">{{week_day(h.week_day)}}, {{getHour(h.start)}} - {{getHour(h.end)}}, {{activity(h.activity)}}</option>
                           </select>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                           <textarea class="form-control" placeholder="Ex.: Exercícios feitos" v-model="value.observation" :readonly="!isMonitor"></textarea>
                         </div>
                     </div>
-                    <button v-if="isMonitor && saveDay" class="btn btn-primary">Salvar horário</button>
+                    <button v-if="isMonitor && saveDay" class="btn btn-primary" @click="saveFrequency(value)">Salvar horário</button>
                     <button v-if="isMonitor && (value.id === undefined || value.id === null)" class="btn btn-primary" @click="removeFrequency(index)">Apagar</button>
                   </div>
                 </div>
@@ -76,6 +76,8 @@
 </template>
 
 <script>
+import DT from "../utils/dt"
+
 export default {
   props: {
     horarios: null,
@@ -92,10 +94,34 @@ export default {
       eventShowControl: [],
       saveDay: true,
       focused: false,
-      isMonitor: this.isUserMonitor
+      isMonitor: this.isUserMonitor,
+      dt: new DT()
     };
   },
   methods: {
+    saveFrequency(freq) {
+      if (!!freq.id) {
+        if(this.isFrequencyDataRight(freq)) {
+          // Update frquency
+          console.log(freq);
+        }
+      } else {
+        if(this.isFrequencyDataRight(freq)) {
+          // Insert new frequency
+          console.log(freq);
+        }
+      }
+    },
+    isFrequencyDataRight(freq) {
+      if (!freq.start || !freq.end) {
+        return false;
+      }
+
+      if (this.dt.compareTime(freq.start, freq.end) >= 0) {
+        return false;
+      }
+      return true;
+    },
     removeFrequency(index) {
       let hint = this.day[0].actual_date;
 
