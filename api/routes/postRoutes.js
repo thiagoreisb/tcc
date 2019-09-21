@@ -1,6 +1,12 @@
 'use strict';
 
 const postRoutes = (app, api) => {
+    app.post('/new/frequency', (req, res) => {
+        api.postMonitoring('/frequency/save', req.body)
+            .then(r => res.send(r))
+            .catch(err => res.send(err));
+    });
+
     app.post('/new/schedule', (req, res) => {
         var data = {...req.body};
 
