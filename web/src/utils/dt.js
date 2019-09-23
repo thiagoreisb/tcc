@@ -54,6 +54,53 @@ class DateUtils {
             return 1;
         }
     }
+
+    /**
+     * Adds a leading zero to the number if necessary
+     * @param {number} n Number to be added zero
+     */
+    appendZero(n) {
+        if (n <= 9) {
+            return "0" + n;
+        }
+        return "" + n;
+    }
+
+    /**
+     * Returns the year of a date in string format
+     * @param {string} dateString String representing a date format
+     * @returns A string representing the year extract from the date informed
+     */
+    getYear(dateString) {
+        return new Date(dateString).getFullYear() + "";
+    }
+
+    /**
+     * Returns the month of a date in string format
+     * @param {string} dateString String representing a date format
+     * @returns A string representing the month extract from the date informed
+     */
+    getMonth(dateString) {
+        return this.appendZero(new Date(dateString).getMonth() + 1);
+    }
+
+    /**
+     * Returns the day of a date in string format
+     * @param {string} dateString String representing a date format
+     * @returns A string representing the day of month extract from the date informed
+     */
+    getDay(dateString) {
+        return this.appendZero(new Date(dateString).getDate());
+    }
+
+    /**
+     * Returns a date formatted for the system
+     * @param {string} dateString String representing a date format
+     * @returns A string representing the full date
+     */
+    getFullDate(dateString) {
+        return this.getYear(dateString) + "-" + this.getMonth(dateString) + "-" + this.getDay(dateString);
+    }
 }
 
 export default DateUtils;

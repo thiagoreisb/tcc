@@ -43,8 +43,10 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="scheduleIdFreq">Horário</span>
                           </div>
-                          <select class="custom-select">
-                            <option v-for="h in horariosDoDia" v-bind:key="h.id" v-bind:value="h.id" v-bind:selected="value.schedule_id == h.id">{{week_day(h.week_day)}}, {{getHour(h.start)}} - {{getHour(h.end)}}, {{activity(h.activity)}}</option>
+                          <select class="custom-select" v-model="value.schedule_id">
+                            <option v-for="h in horariosDoDia"
+                              v-bind:key="h.id" v-bind:value="h.id"
+                              :selected="value.schedule_id == h.id">{{week_day(h.week_day)}}, {{getHour(h.start)}} - {{getHour(h.end)}}, {{activity(h.activity)}}</option>
                           </select>
                         </div>
                     </div>
@@ -72,13 +74,19 @@
     <div class="card" v-bind:class="getDayCSS" v-else @click="expand">
       <h5 class="card-header">{{dayMonth}}</h5>
     </div>
+    <toast :title="toastTitle" :body="toastBody" :toastType="toastType"></toast>
   </div>
 </template>
 
 <script>
+import Api from "../controllers/apiController";
+import Toast from "../components/Toast";
 import DT from "../utils/dt"
 
 export default {
+  components: {
+    Toast
+  },
   props: {
     horarios: null,
     dayRef: null,
@@ -87,6 +95,7 @@ export default {
   },
   data() {
     return {
+      api: Api,
       horariosValidos: this.horarios.status.filter(el => el.situation == 1),
       dayMonth: new Date(this.dayRef[0].actual_date).getDate(),
       dayTitle: new Date(this.dayRef[0].actual_date).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' }),
@@ -95,20 +104,39 @@ export default {
       saveDay: true,
       focused: false,
       isMonitor: this.isUserMonitor,
-      dt: new DT()
+      dt: new DT(),
+      toastTitle: "",
+      toastBody: "",
+      toastType: 1
     };
   },
   methods: {
-    saveFrequency(freq) {
+    saveFrequency(frequency) {
+      var freq = {...frequency};
       if (!!freq.id) {
         if(this.isFrequencyDataRight(freq)) {
           // Update frquency
-          console.log(freq);
+          // TODO
         }
       } else {
         if(this.isFrequencyDataRight(freq)) {
+          freq.status = "0";
+          freq.observation = freq.observation == null ? "" : freq.observation;
+          freq.actual_date = this.dt.getFullDate(freq.actual_date);
+
           // Insert new frequency
-          console.log(freq);
+          this.api.post("new/frequency", freq)
+            .then(res => {
+              this.toastType = 1;
+              this.toastBody = "Horário gravado com sucesso!"
+              $(".toast").toast("show");
+              // TODO: reload to show new frequency
+            })
+            .catch(res => {
+              this.toastType = 2;
+              this.toastBody = "Erro ao salvar"
+              $(".toast").toast("show");
+            });
         }
       }
     },
@@ -120,6 +148,11 @@ export default {
       if (this.dt.compareTime(freq.start, freq.end) >= 0) {
         return false;
       }
+
+      if (freq.schedule_id == undefined || freq.schedule_id == "") {
+        return false;
+      }
+
       return true;
     },
     removeFrequency(index) {

@@ -48,6 +48,7 @@ export default {
 <style>
 .toast-position {
   position: fixed;
+  z-index: 3;
   width: 200px;
   top: 0;
   right: 0;
