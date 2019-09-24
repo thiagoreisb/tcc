@@ -111,6 +111,24 @@ export default {
     };
   },
   methods: {
+    isTimeRight(value) {
+      if (!!value.schedule_id) {
+        let h = this.horariosValidos.filter(el => el.id == value.schedule_id);
+        let f = new Date(value.actual_date);
+
+        if (Array.isArray(h) && h.length > 0 && h[0].week_day == f.getDay()) {
+          let compStart = this.dt.compTime(h[0].start, value.start);
+          let compEnd = this.dt.compTime(h[0].end, value.end);
+
+          if ((compStart < 0 ? compStart * -1 : compStart)
+              + (compEnd < 0 ? compEnd * -1 : compEnd) <= 15) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    },
     saveFrequency(frequency) {
       var freq = {...frequency};
       if (!!freq.id) {
@@ -120,7 +138,7 @@ export default {
         }
       } else {
         if(this.isFrequencyDataRight(freq)) {
-          freq.status = "0";
+          freq.status = this.isTimeRight(freq) ? "0" : "1";
           freq.observation = freq.observation == null ? "" : freq.observation;
           freq.actual_date = this.dt.getFullDate(freq.actual_date);
 
