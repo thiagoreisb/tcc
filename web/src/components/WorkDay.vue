@@ -16,7 +16,7 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="entranceFreq">Entrada</span>
                           </div>
-                          <input type="time" class="form-control" v-model="value.start" :readonly="!isMonitor">
+                          <input type="time" class="form-control" v-model="value.start" :readonly="!isMonitor || !!value.id">
                         </div>
                     </div>
 
@@ -25,7 +25,7 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="exitFreq">Saída</span>
                           </div>
-                          <input type="time" class="form-control" v-model="value.end" :readonly="!isMonitor">
+                          <input type="time" class="form-control" v-model="value.end" :readonly="!isMonitor || !!value.id">
                         </div>
                     </div>
 
@@ -34,7 +34,7 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="classroomFreq">Sala</span>
                           </div>
-                          <input type="number" class="form-control" placeholder="Número da sala" v-model="value.classroom_id" :readonly="!isMonitor">
+                          <input type="number" class="form-control" placeholder="Número da sala" v-model="value.classroom_id" :readonly="!isMonitor || !!value.id">
                         </div>
                     </div>
 
@@ -43,7 +43,7 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="scheduleIdFreq">Horário</span>
                           </div>
-                          <select class="custom-select" v-model="value.schedule_id">
+                          <select class="custom-select" v-model="value.schedule_id" v-bind:disabled="!!value.id">
                             <option v-for="h in horariosDoDia"
                               v-bind:key="h.id" v-bind:value="h.id"
                               :selected="value.schedule_id == h.id">{{week_day(h.week_day)}}, {{getHour(h.start)}} - {{getHour(h.end)}}, {{activity(h.activity)}}</option>
@@ -56,10 +56,10 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="observationFreq">Observação</span>
                           </div>
-                          <textarea class="form-control" placeholder="Ex.: Exercícios feitos" v-model="value.observation" :readonly="!isMonitor"></textarea>
+                          <textarea class="form-control" placeholder="Ex.: Exercícios feitos" v-model="value.observation" :readonly="!isMonitor || !!value.id"></textarea>
                         </div>
                     </div>
-                    <button v-if="isMonitor && saveDay" class="btn btn-primary" @click="saveFrequency(value)">Salvar horário</button>
+                    <button v-if="isMonitor && saveDay && !value.id" class="btn btn-primary" @click="saveFrequency(value)">Salvar horário</button>
                     <button v-if="isMonitor && (value.id === undefined || value.id === null)" class="btn btn-primary" @click="removeFrequency(index)">Apagar</button>
                   </div>
                 </div>
