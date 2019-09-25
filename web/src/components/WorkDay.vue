@@ -4,7 +4,7 @@
       <div class="col-6 mx-auto h-100">
         <div class="card justify-content-center">
           <h4 class="card-header">Dia {{dayTitle}}<i @click="expand" class="btn btn-secondary float-right">X</i></h4>
-          <div v-if="day[0].id !== undefined">
+          <div v-if="day[0].id !== undefined && !isAttendancesVisible">
             <div v-for="(value, index) in day" v-bind:key="index">
               <div v-if="!eventShowControl[index].show" class="card-body event-day" @click="expandEvent(index)">{{getHour(value.start)}} - {{getHour(value.end)}}</div>
               <div v-else>
@@ -60,13 +60,19 @@
                         </div>
                     </div>
                     <button v-if="isMonitor && saveDay && !value.id" class="btn btn-primary" @click="saveFrequency(value)">Salvar horário</button>
-                    <button v-if="isMonitor && (value.id === undefined || value.id === null)" class="btn btn-primary" @click="removeFrequency(index)">Apagar</button>
+                    <button v-if="isMonitor && (value.id === undefined || value.id === null)" class="btn btn-secondary" @click="removeFrequency(index)">Apagar</button>
+                    <button v-if="isMonitor && !!value.id" class="btn btn-primary" @click="showAttendances(value)">Atendimentos</button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <button v-if="isMonitor" class="btn btn-secondary" @click="addFrequency()">Novo horário</button>
+          <button v-if="isMonitor && !isAttendancesVisible" class="btn btn-secondary" @click="addFrequency()">Novo horário</button>
+          
+          <div v-if="isAttendancesVisible">
+            <attendances :freq_id="freq_id" :ready="isAttendancesVisible" :atendimentos="attendances" :editable="true"></attendances>
+            <button class="btn btn-primary" @click="closeAttendances()">Voltar</button>
+          </div>
         </div>
       </div>
     </div>
@@ -85,7 +91,8 @@ import DT from "../utils/dt"
 
 export default {
   components: {
-    Toast
+    Toast,
+    Attendances: () => import('../components/Attendances')
   },
   props: {
     horarios: null,
@@ -103,14 +110,24 @@ export default {
       eventShowControl: [],
       saveDay: true,
       focused: false,
+      isAttendancesVisible: false,
+      attendances: {},
       isMonitor: this.isUserMonitor,
       dt: new DT(),
       toastTitle: "",
       toastBody: "",
-      toastType: 1
+      toastType: 1,
+      freq_id: null
     };
   },
   methods: {
+    closeAttendances() {
+      this.isAttendancesVisible = false;
+    },
+    showAttendances(freq) {
+      this.freq_id = freq.id;
+      this.isAttendancesVisible = true;
+    },
     isTimeRight(value) {
       if (!!value.schedule_id) {
         let h = this.horariosValidos.filter(el => el.id == value.schedule_id);
