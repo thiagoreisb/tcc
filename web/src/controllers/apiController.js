@@ -8,7 +8,7 @@ class ApiController {
     }
 
     /**
-     * Returns the response of GET resource
+     * Handles GET response
      * @param {string} resource API resource
      * @param {function} cb Callback function
      * @param {function} err Callback error function
@@ -17,6 +17,14 @@ class ApiController {
         axios.get(this.api_base + resource)
             .then((response) => cb(response.data))
             .catch((error) => err(error));
+    }
+
+    /**
+     * Return the GET response
+     * @param {string} resource API resource
+     */
+    get2(resource) {
+        return axios.get(this.api_base + resource);
     }
 
     /**

@@ -126,7 +126,15 @@ export default {
     },
     showAttendances(freq) {
       this.freq_id = freq.id;
-      this.isAttendancesVisible = true;
+
+      this.api.get2('attendance/from/frequency/'+ this.freq_id)
+        .then((r) => {
+          this.isAttendancesVisible = true;
+          this.attendances = r.data;
+        })
+        .catch((err) => {
+          //
+        });
     },
     isTimeRight(value) {
       if (!!value.schedule_id) {

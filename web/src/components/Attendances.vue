@@ -62,7 +62,8 @@
                 <tr v-for="atendimento in atendimentos.status" :key="atendimento.id">
                     <td>{{get_date(atendimento.actual_date)}}</td>
                     <td>{{atendimento.start}} - {{atendimento.end}}</td>
-                    <td>{{atendimento.person_name}}</td>
+                    <td v-if="!!atendimento.person_name">{{atendimento.person_name}}</td>
+                    <td v-else>{{atendimento.person_id}}</td>
                     <td>{{atendimento.observation}}</td>
                 </tr>
             </tbody>
@@ -71,6 +72,8 @@
 </template>
 
 <script>
+import Api from "../controllers/apiController";
+
 export default {
     props: {
         atendimentos: {},
@@ -80,6 +83,7 @@ export default {
     },
     data() {
         return {
+            api: Api,
             attend: {},
             editableAttend: this.editable,
             newAttendance: false
@@ -93,9 +97,17 @@ export default {
         save() {
             this.attend.frequency_id = this.freq_id;
             if (this.isDataRight()) {
-                // TODO: Call api
-                this.newAttendance = false;
-                this.editableAttend = true;
+                this.api.post('new/attendance', this.attend)
+                    .then((r) => {
+                        console.log('Adicionado!');
+                    })
+                    .catch((err) => {
+                        console.log('Erro: ' + err);
+                    })
+                    .finally(() => {
+                        this.newAttendance = false;
+                        this.editableAttend = true;
+                    });
             } else {
                 // TODO: Show warning
             }
@@ -116,6 +128,10 @@ export default {
             this.editableAttend = true;
         },
         get_date: function (value) {
+            if (!value) {
+                return "";
+            }
+
             let date = new Date(value);
             let days = date.getDate();
             let month = date.getMonth() + 1;

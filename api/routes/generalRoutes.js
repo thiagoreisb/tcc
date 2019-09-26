@@ -110,21 +110,31 @@ const generalRoutes = (app, api) => {
 
     app.get('/attendance/from/person/:id', (req, res) => {
         var attendances;
+        var frequencies;
+        var people;
         api.getFromMonitoring('/attendance/by/person/' + req.params.id + (req.query.date ? '?date=' + req.query.date : ''))
             .then((data) => {
                 attendances = data;
 
-                let frequencies = [...new Set(attendances.status.map(x => x.frequency_id))];
-                let people = [...new Set(attendances.status.map(x => x.person_id))];
-
+                frequencies = [...new Set(attendances.status.map(x => x.frequency_id))];
+                people = [...new Set(attendances.status.map(x => x.person_id))];
+                
                 let freqRes = frequencies.map(el => api.getFromMonitoring('/frequency/get/' + el));
                 let peoRes = people.map(el => api.getFromInstitution('/person/get/' + el));
 
                 return Promise.all(freqRes.concat(peoRes));
             })
             .then((data) => {
-                let freq = data[0].status;
-                let peep = data[1].status;
+                let freq = [];
+                let peep = [];
+
+                for (let index = 0; index < frequencies.length; index++) {
+                    freq.push(data[index].status[0]);
+                }
+
+                for (let index = frequencies.length; index < frequencies.length + people.length; index++) {
+                    peep.push(data[index].status[0]);
+                }
 
                 attendances.status.forEach(el => {
                     el.person_name = peep.filter(p => el.person_id == p.id)[0].name;
