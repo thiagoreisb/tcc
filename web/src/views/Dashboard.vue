@@ -9,19 +9,22 @@
       <span v-if="user.type == constants.MONITOR_TYPE || user.type == constants.ADVISOR_TYPE || user.type == constants.COORDINATOR_TYPE"><router-link to="/app/relatorios">Relatórios</router-link> | </span>
       <a @click="signOut" href="#">Sair</a>
     </div>
-    <router-view :apiData="api" :userData="user" v-on:load="onLoading"/>
+    <router-view :apiData="api" :userData="user" v-on:load="onLoading" v-on:toast="onToast"/>
     <loading :loading="loading"></loading>
+    <toast :title="toastTitle" :body="toastBody" :toastType="toastType"></toast>
   </div>
 </template>
 
 <script>
 import constants from '../utils/constants'
 import Loading from '../components/Loading'
+import Toast from "../components/Toast"
 
 export default {
   name: 'dashboard',
   components: {
-    Loading
+    Loading,
+    Toast
   },
   props: {
     parentData: Object,
@@ -33,7 +36,10 @@ export default {
       api: this.apiData,
       user: null,
       constants: constants,
-      loading: false
+      loading: false,
+      toastTitle: "",
+      toastBody: "",
+      toastType: 1
     }
   },
   created() {
@@ -48,6 +54,12 @@ export default {
     });
   },
   methods: {
+    onToast: function (type, body, title="") {
+      this.toastType = type;
+      this.toastBody = body;
+      this.toastTitle = title;
+      $(".toast").toast("show");
+    },
     onLoading: function (isLoading) {
       this.loading = isLoading;
     },

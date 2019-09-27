@@ -135,19 +135,14 @@
         </tr>
       </tbody>
     </table>
-    <toast :title="toastTitle" :body="toastBody" :toastType="toastType"></toast>
   </div>
 </template>
 
 <script>
 import Api from "../controllers/apiController";
-import Toast from "../components/Toast";
 import constants from '../utils/constants'
 
 export default {
-  components: {
-    Toast
-  },
   props: {
     userData: Object,
     horarios: {},
@@ -160,13 +155,13 @@ export default {
       showEdit: false,
       saveButtonTitle: "",
       schedule: {},
-      user: this.userData,
-      toastTitle: "",
-      toastBody: "",
-      toastType: 1
+      user: this.userData
     };
   },
   methods: {
+    toast: function (type, body, title="") {
+      this.$emit('toast', type, body, title);
+    },
     load: function (value) {
       this.$emit('load', value);
     },
@@ -188,15 +183,11 @@ export default {
           this.api.post("new/schedule", this.schedule)
               .then(res => {
                 this.load(false);
-                this.toastType = 1;
-                this.toastBody = "Criada com sucesso!";
-                $(".toast").toast("show");
+                this.toast(1, "Salvo com sucesso");
               })
               .catch(res => {
                 this.load(false);
-                this.toastType = 2;
-                this.toastBody = "Erro ao salvar";
-                $(".toast").toast("show");
+                this.toast(2, "Erro ao salvar");
               });
         } else {
           // Atualizar horário existente
@@ -204,9 +195,7 @@ export default {
           this.saveActualSchedule();
         }
       } else {
-        this.toastType = 2;
-        this.toastBody = "Insira os dados corretamente"
-        $(".toast").toast("show");
+        this.toast(2, "Insira os dados corretamente");
       }
     },
     saveActualSchedule() {
@@ -215,15 +204,11 @@ export default {
       this.api.put("update/schedule", this.schedule)
         .then(res => {
           this.load(false);
-          this.toastType = 1;
-          this.toastBody = "Salvo com sucesso!";
-          $(".toast").toast("show");
+          this.toast(1, "Salvo com sucesso");
         })
         .catch(res => {
           this.load(false);
-          this.toastType = 2;
-          this.toastBody = "Erro ao salvar";
-          $(".toast").toast("show");
+          this.toast(2, "Erro ao salvar");
         });
     },
     isDataRight() {

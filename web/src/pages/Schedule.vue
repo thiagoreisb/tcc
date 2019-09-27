@@ -1,7 +1,7 @@
 <template>
   <div id="schedule">
     <h1>Horários</h1>
-    <horarios :horarios="horarios" :ready="status" :userData="user" v-on:load="load"></horarios>
+    <horarios :horarios="horarios" :ready="status" :userData="user" v-on:load="load" v-on:toast="toast"></horarios>
   </div>
 </template>
 
@@ -28,6 +28,9 @@ export default {
     }
   },
   methods: {
+    toast: function (type, body, title="") {
+      this.$emit('toast', type, body, title);
+    },
     load: function (value) {
       this.$emit('load', value);
     }
