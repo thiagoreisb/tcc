@@ -11,7 +11,7 @@
       <div v-for="i in calendar.length" v-bind:key="i" class="row no-gutters fixed-min-width">
         <work-day v-for="j in calendar[i-1]" v-bind:key="j[0].actual_date" :dayRef="j"
         :month="refMonth.getMonth()" :isUserMonitor="user.type == c.MONITOR_TYPE" class="col"
-        :horarios="horarios"></work-day>
+        :horarios="horarios" v-on:load="load" v-on:toast="toast" v-on:reload-frequency="getFrequency"></work-day>
       </div>
     </div>
   </div>
@@ -46,6 +46,9 @@ export default {
     };
   },
   methods: {
+    toast: function (type, body, title="") {
+      this.$emit('toast', type, body, title);
+    },
     load: function (value) {
       this.$emit('load', value);
     },

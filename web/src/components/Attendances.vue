@@ -90,6 +90,12 @@ export default {
         }
     },
     methods: {
+        toast: function (type, body, title="") {
+            this.$emit('toast', type, body, title);
+        },
+        load: function (value) {
+            this.$emit('load', value);
+        },
         newAttend() {
             this.newAttendance = true;
             this.editableAttend = false;
@@ -97,19 +103,22 @@ export default {
         save() {
             this.attend.frequency_id = this.freq_id;
             if (this.isDataRight()) {
+                this.load(true);
                 this.api.post('new/attendance', this.attend)
                     .then((r) => {
-                        console.log('Adicionado!');
+                        this.toast(1, "Adicionado!");
+                        this.$emit('reload-attendances', this.freq_id);
                     })
                     .catch((err) => {
-                        console.log('Erro: ' + err);
+                        this.toast(2, "Erro ao tentar adicionar!");
                     })
                     .finally(() => {
+                        this.load(false);
                         this.newAttendance = false;
                         this.editableAttend = true;
                     });
             } else {
-                // TODO: Show warning
+                this.toast(0, "Preencha os dados corretamente");
             }
         },
         isDataRight() {

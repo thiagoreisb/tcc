@@ -31,7 +31,7 @@ export default {
         left: 0;
         top: 0;
         background-color: rgb(199, 209, 203);
-        background-color: rgb(199, 209, 203, 0.9);
+        background-color: rgb(199, 209, 203, 0.6);
         overflow-x: hidden;
         transition: 0.5s;
     }

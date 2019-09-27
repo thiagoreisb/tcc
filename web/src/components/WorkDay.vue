@@ -70,7 +70,8 @@
           <button v-if="isMonitor && !isAttendancesVisible" class="btn btn-secondary" @click="addFrequency()">Novo horário</button>
           
           <div v-if="isAttendancesVisible">
-            <attendances :freq_id="freq_id" :ready="isAttendancesVisible" :atendimentos="attendances" :editable="true"></attendances>
+            <attendances :freq_id="freq_id" :ready="isAttendancesVisible" :atendimentos="attendances" :editable="true"
+              v-on:load="load" v-on:toast="toast" v-on:reload-attendances="showAttendances"></attendances>
             <button class="btn btn-primary" @click="closeAttendances()">Voltar</button>
           </div>
         </div>
@@ -80,18 +81,15 @@
     <div class="card" v-bind:class="getDayCSS" v-else @click="expand">
       <h5 class="card-header">{{dayMonth}}</h5>
     </div>
-    <toast :title="toastTitle" :body="toastBody" :toastType="toastType"></toast>
   </div>
 </template>
 
 <script>
 import Api from "../controllers/apiController";
-import Toast from "../components/Toast";
 import DT from "../utils/dt"
 
 export default {
   components: {
-    Toast,
     Attendances: () => import('../components/Attendances')
   },
   props: {
@@ -114,19 +112,23 @@ export default {
       attendances: {},
       isMonitor: this.isUserMonitor,
       dt: new DT(),
-      toastTitle: "",
-      toastBody: "",
-      toastType: 1,
       freq_id: null
     };
   },
   methods: {
+    toast: function (type, body, title="") {
+      this.$emit('toast', type, body, title);
+    },
+    load: function (value) {
+      this.$emit('load', value);
+    },
     closeAttendances() {
       this.isAttendancesVisible = false;
     },
     showAttendances(freq) {
       this.freq_id = freq.id;
 
+      this.load(true);
       this.api.get2('attendance/from/frequency/'+ this.freq_id)
         .then((r) => {
           this.isAttendancesVisible = true;
@@ -134,6 +136,9 @@ export default {
         })
         .catch((err) => {
           //
+        })
+        .finally(() => {
+          this.load(false);
         });
     },
     isTimeRight(value) {
@@ -167,18 +172,18 @@ export default {
           freq.observation = freq.observation == null ? "" : freq.observation;
           freq.actual_date = this.dt.getFullDate(freq.actual_date);
 
+          this.load(true);
           // Insert new frequency
           this.api.post("new/frequency", freq)
             .then(res => {
-              this.toastType = 1;
-              this.toastBody = "Horário gravado com sucesso!"
-              $(".toast").toast("show");
-              // TODO: reload to show new frequency
+              this.toast(1, "Horário gravado com sucesso!");
+              this.$emit('reload-frequency');
             })
             .catch(res => {
-              this.toastType = 2;
-              this.toastBody = "Erro ao salvar"
-              $(".toast").toast("show");
+              this.toast(2, "Erro ao salvar!");
+            })
+            .finally(() => {
+              this.load(false);
             });
         }
       }
@@ -298,6 +303,7 @@ export default {
     left: 0;
     top: 0;
     background-color: rgb(199, 209, 203);
+    background-color: rgb(199, 209, 203, 0.6);
     overflow-x: hidden;
     transition: 0.5s;
   }
