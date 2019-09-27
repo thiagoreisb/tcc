@@ -167,6 +167,9 @@ export default {
     };
   },
   methods: {
+    load: function (value) {
+      this.$emit('load', value);
+    },
     aprroveRejectSchedule(approved) {
       this.schedule.situation = approved ? "1" : "2";
       this.saveActualSchedule();
@@ -181,15 +184,18 @@ export default {
           this.schedule.observation = obs === undefined ? "" : obs.toString();
 
           // Adcionar novo horário
+          this.load(true);
           this.api.post("new/schedule", this.schedule)
               .then(res => {
+                this.load(false);
                 this.toastType = 1;
-                this.toastBody = "Criada com sucesso!"
+                this.toastBody = "Criada com sucesso!";
                 $(".toast").toast("show");
               })
               .catch(res => {
+                this.load(false);
                 this.toastType = 2;
-                this.toastBody = "Erro ao salvar"
+                this.toastBody = "Erro ao salvar";
                 $(".toast").toast("show");
               });
         } else {
@@ -204,18 +210,21 @@ export default {
       }
     },
     saveActualSchedule() {
+      this.load(true);
       // Salvar horário
       this.api.put("update/schedule", this.schedule)
-          .then(res => {
-            this.toastType = 1;
-            this.toastBody = "Salvo com sucesso!"
-            $(".toast").toast("show");
-          })
-          .catch(res => {
-            this.toastType = 2;
-            this.toastBody = "Erro ao salvar"
-            $(".toast").toast("show");
-          });
+        .then(res => {
+          this.load(false);
+          this.toastType = 1;
+          this.toastBody = "Salvo com sucesso!";
+          $(".toast").toast("show");
+        })
+        .catch(res => {
+          this.load(false);
+          this.toastType = 2;
+          this.toastBody = "Erro ao salvar";
+          $(".toast").toast("show");
+        });
     },
     isDataRight() {
       if (!this.schedule.start || !this.schedule.end) {
@@ -267,6 +276,7 @@ export default {
       this.schedule = schedule;
       this.toggleEdition(true);
     },
+    /// Filters
     schedules_situation: function(situation) {
       switch (situation) {
         case 0:

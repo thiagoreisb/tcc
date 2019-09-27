@@ -5,13 +5,11 @@
     <monitoring v-if="user.type == constants.ADMIN_TYPE" :apiData="api"></monitoring>
     <termos v-else :termos="termos" :ready="termosStatus" v-on:open-schedule="openSchedule"></termos>
     <horarios v-if="horariosStatus" :horarios="horarios" :ready="horariosStatus"></horarios>
-    <loading :loading="loading"></loading>
   </div>
 </template>
 
 <script>
 import constants from '../utils/constants'
-import Loading from '../components/Loading'
 import Api from '../controllers/apiController'
 
 export default {
@@ -19,8 +17,7 @@ export default {
   components: {
     Termos: () => import('../components/Termos'),
     Monitoring: () => import('../components/Monitoring'),
-    Horarios: () => import('../components/Horarios'),
-    Loading
+    Horarios: () => import('../components/Horarios')
   },
   props: {
     userData: Object
@@ -35,11 +32,13 @@ export default {
       horarios: null,
       termosStatus: false,
       horariosStatus: false,
-      backStatus: false,
-      loading: false
+      backStatus: false
     }
   },
   methods: {
+    load: function (value) {
+      this.$emit('load', value);
+    },
     comeBack: function() {
       this.horariosStatus = false;
       this.termosStatus = true;
@@ -47,7 +46,7 @@ export default {
       this.backStatus = false;
     },
     openSchedule: function(contractID) {
-      this.loading = true;
+      this.load(true);
       this.pageTitle = 'Plano de Trabalho';
       this.api.get(
         'schedules/from/contract/' + contractID,
@@ -59,23 +58,23 @@ export default {
           this.horariosStatus = true;
           
           this.backStatus = true;
-          this.loading = false;
+          this.load(false);
         },
         (err) => {
           //
-          this.loading = false;
+          this.load(false);
         });
     },
     openContracts: function() {
-      this.loading = true;
+      this.load(true);
       this.api.get('monitoring/all/my/' + this.user.id,
       (res) => {
         this.termosStatus = true;
         this.termos = res;
-        this.loading = false;
+        this.load(false);
       }, (res) => {
         // show error
-        this.loading = false;
+        this.load(false);
       });
     }
   },

@@ -1,21 +1,18 @@
 <template>
   <div id="schedule">
     <h1>Horários</h1>
-    <horarios :horarios="horarios" :ready="status" :userData="user"></horarios>
-    <loading :loading="loading"></loading>
+    <horarios :horarios="horarios" :ready="status" :userData="user" v-on:load="load"></horarios>
   </div>
 </template>
 
 <script>
 import Horarios from '../components/Horarios'
-import Loading from '../components/Loading'
 import Api from '../controllers/apiController'
 
 export default {
   name: 'schedule',
   components: {
-    Horarios,
-    Loading
+    Horarios
   },
   props: {
     parentData: Object,
@@ -27,20 +24,24 @@ export default {
       api: Api,
       user: this.userData,
       horarios: [],
-      status: false,
-      loading: false
+      status: false
+    }
+  },
+  methods: {
+    load: function (value) {
+      this.$emit('load', value);
     }
   },
   created() {
-    this.loading = true;
+    this.load(true);
     this.api.get('schedules/from/person/' + this.user.id,
     (res) => {
       this.horarios = res;
       this.status = true;
-      this.loading = false;
+      this.load(false);
     }, (res) => {
       // show error
-      this.loading = false;
+      this.load(false);
     });
   }
 }

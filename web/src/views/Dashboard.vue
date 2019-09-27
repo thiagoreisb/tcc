@@ -9,15 +9,20 @@
       <span v-if="user.type == constants.MONITOR_TYPE || user.type == constants.ADVISOR_TYPE || user.type == constants.COORDINATOR_TYPE"><router-link to="/app/relatorios">Relatórios</router-link> | </span>
       <a @click="signOut" href="#">Sair</a>
     </div>
-    <router-view :apiData="api" :userData="user"/>
+    <router-view :apiData="api" :userData="user" v-on:load="onLoading"/>
+    <loading :loading="loading"></loading>
   </div>
 </template>
 
 <script>
 import constants from '../utils/constants'
+import Loading from '../components/Loading'
 
 export default {
   name: 'dashboard',
+  components: {
+    Loading
+  },
   props: {
     parentData: Object,
     apiData: Object
@@ -27,7 +32,8 @@ export default {
       firebase: this.parentData,
       api: this.apiData,
       user: null,
-      constants: constants
+      constants: constants,
+      loading: false
     }
   },
   created() {
@@ -42,6 +48,9 @@ export default {
     });
   },
   methods: {
+    onLoading: function (isLoading) {
+      this.loading = isLoading;
+    },
     signOut: function() {
       /// Get this reference
       let _this = this;

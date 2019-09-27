@@ -5,19 +5,16 @@
       <button @click="changeRefMonth(false)">&lt;</button> {{nameMonth}} <button @click="changeRefMonth(true)">&gt;</button>
     </div>
     <attendances :atendimentos="attendances" :ready="status_atend"></attendances>
-    <loading :loading="loading"></loading>
   </div>
 </template>
 
 <script>
 import Attendances from '../components/Attendances'
-import Loading from '../components/Loading'
 
 export default {
   name: 'attendance',
   components: {
-    Attendances,
-    Loading
+    Attendances
   },
   props: {
     parentData: Object,
@@ -34,11 +31,13 @@ export default {
       status_atend: false,
       status_freq: false,
       refMonth: null,
-      nameMonth: '',
-      loading: false
+      nameMonth: ''
     }
   },
   methods: {
+    load: function (value) {
+      this.$emit('load', value);
+    },
     changeRefMonth: function(isAdding) {
       if (isAdding && this.refMonth.getMonth() < 11) {
         this.refMonth.setMonth(this.refMonth.getMonth() + 1);
@@ -99,17 +98,16 @@ export default {
         + (m < 10 ? '0' + m : m) + '-'
         + (d < 10 ? '0' + d : d);
 
-      this.loading = true;
+      this.load(true);
       this.api.get(
         'attendance/from/person/' + this.user.id + '?date=' + when,
         (res) => {
           this.attendances = res;
           this.status_atend = true;
-          this.loading = false;
+          this.load(false);
         },
         (res) => {
-          this.attendances = res;
-          this.loading = false;
+          this.load(false);
         }
       );
     }

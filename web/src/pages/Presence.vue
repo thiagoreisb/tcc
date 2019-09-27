@@ -14,21 +14,18 @@
         :horarios="horarios"></work-day>
       </div>
     </div>
-    <loading :loading="loading"></loading>
   </div>
 </template>
 
 <script>
 import Constantes from "../utils/constants"
-import Loading from "../components/Loading";
-import Api from "../controllers/apiController";
+import Api from "../controllers/apiController"
 import WorkDay from "../components/WorkDay"
 import DT from "../utils/dt"
 
 export default {
   name: "presence",
   components: {
-    Loading,
     WorkDay
   },
   props: {
@@ -44,12 +41,14 @@ export default {
       status_freq: false,
       refMonth: null,
       nameMonth: '',
-      loading: false,
       calendar: [],
       dt: new DT()
     };
   },
   methods: {
+    load: function (value) {
+      this.$emit('load', value);
+    },
     changeRefMonth: function(isAdding) {
       if (isAdding && this.refMonth.getMonth() < 11) {
         this.refMonth.setMonth(this.refMonth.getMonth() + 1);
@@ -110,7 +109,7 @@ export default {
         + (m < 10 ? '0' + m : m) + '-'
         + (d < 10 ? '0' + d : d);
 
-      this.loading = true;
+      this.load(true);
       // Horários da grade
       this.api.get(
         'schedules/from/person/' + this.user.id,
@@ -123,17 +122,17 @@ export default {
               if (res.status != undefined && res.status != null) {
                 this.frequencies = res;
                 this.status_freq = true;
-                this.loading = false;
                 this.getCalendar();
+                this.load(false);
               }
             },
             res => {
-              this.loading = false;
+              this.load(false);
             }
           );
         }, (res) => {
           // show error
-          this.loading = false;
+          this.load(false);
       });
     },
     weekDay(value) {
