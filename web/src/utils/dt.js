@@ -95,6 +95,15 @@ class DateUtils {
     }
 
     /**
+     * Returns a date formatted in the Brazilian system
+     * @param {string} dateString String representing a date format
+     * @returns A string representing the full date
+     */
+    getFullDateLocal(dateString) {
+        return this.getDay(dateString) + "-" + this.getMonth(dateString) + "-" + this.getYear(dateString);
+    }
+
+    /**
      * Gets the hour part of a time in string format
      * @param {string} timeString String representing time in 24h format
      * @returns The hour part of the string

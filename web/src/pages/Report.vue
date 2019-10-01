@@ -2,7 +2,7 @@
   <div id="report">
     <h1>Relatórios</h1>
 
-    <reports :reports="reports"></reports>
+    <reports :reports="reports" v-on:load="load" v-on:toast="toast"></reports>
   </div>
 </template>
 
@@ -28,6 +28,9 @@ export default {
     }
   },
   methods: {
+    toast: function (type, body, title="") {
+      this.$emit('toast', type, body, title);
+    },
     load: function (value) {
       this.$emit('load', value);
     }
