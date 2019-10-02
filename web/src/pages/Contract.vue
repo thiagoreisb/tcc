@@ -69,8 +69,10 @@ export default {
       this.load(true);
       this.api.get('monitoring/all/my/' + this.user.id,
       (res) => {
-        this.termosStatus = true;
-        this.termos = res;
+        if (res.status) {
+          this.termosStatus = true;
+          this.termos = res;
+        }
         this.load(false);
       }, (res) => {
         // show error
