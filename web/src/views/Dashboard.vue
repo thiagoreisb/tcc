@@ -2,11 +2,12 @@
   <div id="dashboard">
     <div id="nav" v-if="user !== null">
       <router-link to="/app">Início</router-link> |
-      <span v-if="user.type"><router-link to="/app/monitoria">Monitoria</router-link> | </span>
-      <span v-if="user.type == constants.MONITOR_TYPE || user.type == constants.ADVISOR_TYPE"><router-link to="/app/horarios">Horários</router-link> | </span>
+      <span v-if="user.type"><router-link to="/app/monitoria">Contratos</router-link> | </span>
+      <span v-if="user.type == constants.MONITOR_TYPE || user.type == constants.ADVISOR_TYPE"><router-link to="/app/horarios">Grade</router-link> | </span>
       <span v-if="user.type == constants.MONITOR_TYPE || user.type == constants.ADVISOR_TYPE"><router-link to="/app/atendimentos">Atendimentos</router-link> | </span>
       <span v-if="user.type == constants.MONITOR_TYPE || user.type == constants.ADVISOR_TYPE"><router-link to="/app/presenca">Presenças</router-link> | </span>
       <span v-if="user.type == constants.MONITOR_TYPE || user.type == constants.ADVISOR_TYPE || user.type == constants.COORDINATOR_TYPE"><router-link to="/app/relatorios">Relatórios</router-link> | </span>
+      <span v-if="user.type == constants.ADMIN_TYPE"><router-link to="/app/users">Usuários</router-link> | </span>
       <a @click="signOut" href="#">Sair</a>
     </div>
     <router-view :apiData="api" :userData="user" v-on:load="onLoading" v-on:toast="onToast"/>

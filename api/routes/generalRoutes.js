@@ -39,10 +39,6 @@ const generalRoutes = (app, api) => {
             .catch((err) => res.send(err));
     });
 
-    /**
-     * TODO: Pesquisar nomes de monitor, orientador e disciplina
-     * (ver metodo acima)
-     */
     app.get('/monitoring/all/my/:id', (req, res) => {
         api.getFromMonitoring('/contract/all/my/' + req.params.id)
             .then((data) => {
@@ -147,14 +143,53 @@ const generalRoutes = (app, api) => {
     });
 
     app.get('/student/:name', (req, res) => {
+        var persons;
         api.getFromInstitution('/person/get/student/' + req.params.name)
-            .then((data) => res.send(data))
+            .then((data) => {
+                persons = data;
+                
+                var ids = [...new Set(data.status.map(x => x.id))];
+                
+                return Promise.all(ids.map(id => api.getFromMonitoring('/contract/actual/my/' + id)));
+            })
+            .then((data) => {
+                let results = data.filter(f => f.status.length > 0);
+                
+                persons.status.forEach(el => {
+                    for (let index = 0; index < results.length; index++) {
+                        const contract = results[index];
+                        if (el.id == contract.status[0].monitor_id) {
+                            el.contract_id = contract.status[0].id;
+                        }
+                    }
+                });
+                res.send(persons);
+            })
             .catch((err) => res.send(err));
     });
 
     app.get('/professor/:name', (req, res) => {
+        var persons;
         api.getFromInstitution('/person/get/professor/' + req.params.name)
-            .then((data) => res.send(data))
+            .then((data) => {
+                persons = data;
+
+                var ids = [...new Set(data.status.map(x => x.id))];
+                
+                return Promise.all(ids.map(id => api.getFromMonitoring('/contract/actual/my/' + id)));
+            })
+            .then((data) => {
+                let results = data.filter(f => f.status.length > 0);
+                persons.status.forEach(el => {
+                    for (let index = 0; index < results.length; index++) {
+                        const contract = results[index];
+                        if (el.id == contract.status[0].advisor_id) {
+                            el.contract_id = contract.status[0].id;
+                        }
+                    }
+                });
+                res.send(persons);
+            })
             .catch((err) => res.send(err));
     });
 

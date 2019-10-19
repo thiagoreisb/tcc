@@ -5,7 +5,8 @@ const Attendance = () => import('./pages/Attendance.vue');
 const Contract = () => import('./pages/Contract.vue');
 const Report = () => import('./pages/Report.vue');
 const Schedule = () => import('./pages/Schedule.vue');
-const Presence = () => import('./pages/Presence.vue')
+const Presence = () => import('./pages/Presence.vue');
+const Users = () => import('./pages/Users.vue');
 const Erro = () => import('./pages/Error.vue');
 
 /// User role constants
@@ -72,6 +73,13 @@ module.exports = function (Router, firebase) {
             meta: {
               customAuth: [Constants.MONITOR_TYPE, Constants.ADVISOR_TYPE]
             }
+          },
+          {
+            path: 'users',
+            component: Users,
+            meta: {
+              customAuth: [Constants.ADMIN_TYPE]
+            }
           }
         ]
       },
@@ -83,9 +91,6 @@ module.exports = function (Router, firebase) {
       {
         path: '/about',
         name: 'about',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
         component: () => import('./views/About.vue')
       }
     ]

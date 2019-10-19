@@ -73,7 +73,7 @@
           <div class="form-group row">
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <span class="input-group-text" id="obsrevationSched">Observation</span>
+                <span class="input-group-text" id="obsrevationSched">Observação</span>
               </div>
               <textarea v-model="schedule.observation" class="form-control" v-bind:readonly="user.type == constants.ADVISOR_TYPE"></textarea>
             </div>
