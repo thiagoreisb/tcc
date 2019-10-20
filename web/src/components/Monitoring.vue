@@ -79,21 +79,26 @@
 
 <script>
 import Loading from "./Loading"
+import FB from "../utils/fb"
+import constants from '../utils/constants'
 
 export default {
     components: {
         Loading
     },
     props: {
-        apiData: {}
+        apiData: {},
+        parentData: {}
     },
     data() {
         return {
             api: this.apiData,
             monitoring: {},
+            constants: constants,
             loading: false,
             students: {},
-            professors: {}
+            professors: {},
+            fb: this.parentData
         }
     },
     computed: {
@@ -145,6 +150,7 @@ export default {
                     end.setHours(end.getHours() + 4);
                     
                     this.loading = true;
+                    let _this = this;
                     
                     //send data to api
                     this.api.post('new/monitoring', this.monitoring)
@@ -154,6 +160,26 @@ export default {
                             if (res.data.err !== undefined) {
                                 this.toast(2, "Erro ao tentar criar monitoria!");
                             } else {
+                                var studentFound = false;
+                                var professorFound = false;
+                                /// Updates roles in firebase
+                                _this.fb.database().ref('/roles/').once('value').then(function(snap) {
+                                    snap.forEach(function(childSnap) {
+                                        // Searches for student's ID
+                                        if (childSnap.val().id == _this.monitoring.monitor_id) {
+                                            _this.fb.database().ref('/roles/' + childSnap.key)
+                                                .update({type: _this.constants.MONITOR_TYPE});
+                                            studentFound = true;
+                                        }
+                                        // Searches for professor's ID
+                                        if (childSnap.val().id == _this.monitoring.advisor_id) {
+                                            _this.fb.database().ref('/roles/' + childSnap.key)
+                                                .update({type: _this.constants.ADVISOR_TYPE});
+                                            professorFound = true;
+                                        }
+                                        return studentFound && professorFound;
+                                    });
+                                });
                                 this.toast(1, "Monitoria criada!");
                             }
                         })

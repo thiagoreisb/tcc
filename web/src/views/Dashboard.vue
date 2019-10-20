@@ -10,7 +10,7 @@
       <span v-if="user.type == constants.ADMIN_TYPE"><router-link to="/app/users">Usuários</router-link> | </span>
       <a @click="signOut" href="#">Sair</a>
     </div>
-    <router-view :apiData="api" :userData="user" v-on:load="onLoading" v-on:toast="onToast"/>
+    <router-view :parentData="firebase" :apiData="api" :userData="user" v-on:load="onLoading" v-on:toast="onToast"/>
     <loading :loading="loading"></loading>
     <toast :title="toastTitle" :body="toastBody" :toastType="toastType"></toast>
   </div>

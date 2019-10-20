@@ -2,7 +2,7 @@
   <div id="contract">
     <h1>{{pageTitle}}</h1>
     <button v-if="backStatus" @click="comeBack" class="btn btn-primary">Voltar</button>
-    <monitoring v-if="user.type == constants.ADMIN_TYPE" :apiData="api" v-on:load="load" v-on:toast="toast"></monitoring>
+    <monitoring v-if="user.type == constants.ADMIN_TYPE" :parentData="firebase" :apiData="api" v-on:load="load" v-on:toast="toast"></monitoring>
     <termos v-else :termos="termos" :ready="termosStatus" v-on:open-schedule="openSchedule"></termos>
     <horarios v-if="horariosStatus" :horarios="horarios" :ready="horariosStatus"></horarios>
   </div>
@@ -20,11 +20,13 @@ export default {
     Horarios: () => import('../components/Horarios')
   },
   props: {
-    userData: Object
+    userData: Object,
+    parentData: {}
   },
   data() {
     return {
       api: Api,
+      firebase: this.parentData,
       constants: constants,
       pageTitle: 'Contratos',
       user: this.userData,
