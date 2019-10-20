@@ -49,14 +49,20 @@
                             <li class="list-group-item">
                                 <div class="form-group row">
                                     <label class="col-5 col-form-label" for="studentMonitoringInput">Aluno</label>
-                                    <input id="studentMonitoringInput" type="number" class="col-7 col-form-label-plaintext" v-model="monitoring.monitor_id" >
+                                    <select class="col-7 custom-select" v-model="monitoring.monitor_id" id="studentMonitoringInput">
+                                    <option v-for="s in getStudents"
+                                        v-bind:key="s.id" v-bind:value="s.id">{{s.name}}</option>
+                                    </select>
                                 </div>
                             </li>
 
                             <li class="list-group-item">
                                 <div class="form-group row">
                                     <label class="col-5 col-form-label" for="advisorMonitoringInput">Professor</label>
-                                    <input id="advisorMonitoringInput" type="number" class="col-7 col-form-label-plaintext" v-model="monitoring.advisor_id" >
+                                    <select class="col-7 custom-select" v-model="monitoring.advisor_id" id="advisorMonitoringInput">
+                                    <option v-for="p in getProfessors"
+                                        v-bind:key="p.id" v-bind:value="p.id">{{p.name}}</option>
+                                    </select>
                                 </div>
                             </li>
                         </ul>
@@ -85,26 +91,50 @@ export default {
         return {
             api: this.apiData,
             monitoring: {},
-            loading: false
+            loading: false,
+            students: {},
+            professors: {}
+        }
+    },
+    computed: {
+        // Get only students that aren't monitors
+        getStudents: function() {
+            if (Array.isArray(this.students) && this.students.length) {
+                return this.students.filter(x => !x.contract_id);
+            }
+            return [];
+        },
+        // Get only professors that aren't advisors
+        getProfessors: function() {
+            if (Array.isArray(this.professors) && this.professors.length) {
+                return this.professors.filter(x => !x.contract_id);
+            }
+            return [];
         }
     },
     methods: {
+        toast: function (type, body, title="") {
+            this.$emit('toast', type, body, title);
+        },
+        load: function (value) {
+            this.$emit('load', value);
+        },
         addMonitoring() {
             if (this.monitoring.start_date === undefined || this.monitoring.end_date === undefined
                 || this.monitoring.assistance === undefined || this.monitoring.subject_id === undefined
                 || this.monitoring.monitor_id === undefined || this.monitoring.advisor_id === undefined) {
-                alert("Preencha todos os campos!");
+                this.toast(2, "Preencha todos os campos!");
             } else if (this.monitoring.start_date === "" || this.monitoring.end_date === ""
                 || (this.monitoring.assistance !== "true" && this.monitoring.assistance !== "false")
                 || this.monitoring.subject_id === ""
                 || this.monitoring.monitor_id === "" || this.monitoring.advisor_id === "") {
-                    alert("Preencha todos os campos corretamente!");
+                    this.toast(2, "Preencha todos os campos corretamente!");
             } else {
                 let start = new Date(this.monitoring.start_date);
                 let end = new Date(this.monitoring.end_date);
 
                 if (start >= end) {
-                    alert("Data de início deve ser menor que a de fim!");
+                    this.toast(2, "Data de início deve ser menor que a de fim!");
                 } else {
                     this.monitoring.subject_id = parseInt(this.monitoring.subject_id);
                     this.monitoring.monitor_id = parseInt(this.monitoring.monitor_id);
@@ -122,14 +152,14 @@ export default {
                             this.loading = false;
 
                             if (res.data.err !== undefined) {
-                                alert(err);
+                                this.toast(2, "Erro ao tentar criar monitoria!");
                             } else {
-                                alert("Monitoria criada!");
+                                this.toast(1, "Monitoria criada!");
                             }
                         })
                         .catch((err) => {
                             this.loading = false;
-                            alert(err)
+                            this.toast(2, "Monitoria não foi criada!");
                         });
                 }
             }
@@ -142,7 +172,37 @@ export default {
                 $('#assistanceMonitoringInput').removeClass('active');
                 $('#volunteerMonitoringInput').addClass('active');
             }
+        },
+        searchStudent() {
+            this.load(true);
+            this.api.get2('student/')
+                .then((r) => {
+                    this.students = r.data.status;
+                })
+                .catch((err) => {
+                    //
+                })
+                .finally(() => {
+                    this.searchProfessor();
+                    //this.load(false);
+                });
+        },
+        searchProfessor() {
+            // this.load(true);
+            this.api.get2('professor/')
+                .then((r) => {
+                    this.professors = r.data.status;
+                })
+                .catch((err) => {
+                    //
+                })
+                .finally(() => {
+                    this.load(false);
+                });
         }
+    },
+    created() {
+        this.searchStudent();
     }
 }
 </script>

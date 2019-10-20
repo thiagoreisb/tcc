@@ -7,11 +7,12 @@ const PROFESSOR_CODE = 1;
 
 class InstitutionRead {
     getPersonByName(name, isStudent, cb) {
+        let isEmpty = (name === undefined || name === null || name === '');
         let type = isStudent ? STUDENT_CODE : PROFESSOR_CODE;
 
-        let query = 'select * from person where type = ' + type + ' and name like $1 ';
+        let query = 'select * from person where type = ' + type + (isEmpty ? ' ' : ' and name like $1 ');
 
-        db.exec(query,['%' + name + '%'],cb);
+        db.exec(query,(isEmpty ? [] : ['%' + name + '%']),cb);
     }
 
     getCourseByPersonId(id, cb) {

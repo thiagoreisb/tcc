@@ -142,9 +142,10 @@ const generalRoutes = (app, api) => {
             .catch((err) => res.send(err));
     });
 
-    app.get('/student/:name', (req, res) => {
+    app.get('/student/:name?', (req, res) => {
         var persons;
-        api.getFromInstitution('/person/get/student/' + req.params.name)
+        var isEmpty = (req.params.name === undefined || req.params.name === null || req.params.name === '');
+        api.getFromInstitution('/person/get/student/q/' + (isEmpty ? '' : req.params.name))
             .then((data) => {
                 persons = data;
                 
@@ -168,9 +169,10 @@ const generalRoutes = (app, api) => {
             .catch((err) => res.send(err));
     });
 
-    app.get('/professor/:name', (req, res) => {
+    app.get('/professor/:name?', (req, res) => {
         var persons;
-        api.getFromInstitution('/person/get/professor/' + req.params.name)
+        var isEmpty = (req.params.name === undefined || req.params.name === null || req.params.name === '');
+        api.getFromInstitution('/person/get/professor/q/' + (isEmpty ? '' : req.params.name))
             .then((data) => {
                 persons = data;
 

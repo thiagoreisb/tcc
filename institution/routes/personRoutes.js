@@ -19,10 +19,10 @@ const getPersonRoutes = (app, crud) => {
                 req.params,
                 (data) => res.json(data));
         })
-        .get('/get/student/:name', (req, res) => {
+        .get('/get/student/q/:name?', (req, res) => {
             read.getPersonByName(req.params.name, true, (data) => res.json(data));
         })
-        .get('/get/professor/:name', (req, res) => {
+        .get('/get/professor/q/:name?', (req, res) => {
             read.getPersonByName(req.params.name, false, (data) => res.json(data));
         })
 

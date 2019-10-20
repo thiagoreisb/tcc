@@ -14,7 +14,10 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="studentAttend">Aluno</span>
                         </div>
-                        <input type="number" class="form-control" v-model="attend.person_id">
+                        <select class="custom-select" v-model="attend.person_id" id="studentAttendInput">
+                        <option v-for="s in students"
+                            v-bind:key="s.id" v-bind:value="s.id">{{s.name}}</option>
+                        </select>
                     </div>
                 </div>
 
@@ -86,7 +89,16 @@ export default {
             api: Api,
             attend: {},
             editableAttend: this.editable,
-            newAttendance: false
+            newAttendance: false,
+            students: {}
+        }
+    },
+    computed: {
+        getStudents: function() {
+            if (Array.isArray(this.students) && this.students.length) {
+                return this.students.filter(x => !x.contract_id);
+            }
+            return [];
         }
     },
     methods: {
@@ -147,7 +159,23 @@ export default {
             let year = date.getFullYear();
 
             return (days < 10 ? "0" : "") + days + "/" + (month < 10 ? "0" : "") + month + "/" + year;
+        },
+        searchStudents() {
+            this.load(true);
+            this.api.get2('student/')
+                .then((r) => {
+                    this.students = r.data.status;
+                })
+                .catch((err) => {
+                    //
+                })
+                .finally(() => {
+                    this.load(false);
+                });
         }
+    },
+    created() {
+        this.searchStudents();
     }
 }
 </script>

@@ -2,7 +2,7 @@
   <div id="contract">
     <h1>{{pageTitle}}</h1>
     <button v-if="backStatus" @click="comeBack" class="btn btn-primary">Voltar</button>
-    <monitoring v-if="user.type == constants.ADMIN_TYPE" :apiData="api"></monitoring>
+    <monitoring v-if="user.type == constants.ADMIN_TYPE" :apiData="api" v-on:load="load" v-on:toast="toast"></monitoring>
     <termos v-else :termos="termos" :ready="termosStatus" v-on:open-schedule="openSchedule"></termos>
     <horarios v-if="horariosStatus" :horarios="horarios" :ready="horariosStatus"></horarios>
   </div>
@@ -38,6 +38,9 @@ export default {
   methods: {
     load: function (value) {
       this.$emit('load', value);
+    },
+    toast: function (type, body, title="") {
+      this.$emit('toast', type, body, title);
     },
     comeBack: function() {
       this.horariosStatus = false;
