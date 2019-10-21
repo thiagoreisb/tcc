@@ -11,6 +11,12 @@ const generalRoutes = (app, api) => {
             .catch((err) => res.send(err));
     });
 
+    app.get('/subjects', (req, res) => {
+        api.getFromInstitution('/subject/all')
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
+
     app.get('/schedules', (req, res) => {
         var schedules;
         api.getFromMonitoring('/schedule/all/active')

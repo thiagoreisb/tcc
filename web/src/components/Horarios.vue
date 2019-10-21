@@ -23,7 +23,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text" id="weekDaySched">Dia</span>
               </div>
-              <select class="custom-select" v-model="schedule.week_day" v-if="user.type != constants.ADVISOR_TYPE">
+              <select class="custom-select" v-model="schedule.week_day" v-bind:disabled="user.type == constants.ADVISOR_TYPE">
                 <option value="0">Domingo</option>
                 <option value="1" selected>Segunda</option>
                 <option value="2">Terça</option>
@@ -32,7 +32,6 @@
                 <option value="5">Sexta</option>
                 <option value="6">Sábado</option>
               </select>
-              <input class="custom-select" v-else v-bind:value="week_day(schedule.week_day)" readonly>
             </div>
           </div>
         </div>
@@ -42,12 +41,11 @@
               <div class="input-group-prepend">
                 <span class="input-group-text" id="activitySched">Atividade</span>
               </div>
-              <select class="custom-select" v-model="schedule.activity" v-if="user.type != constants.ADVISOR_TYPE">
+              <select class="custom-select" v-model="schedule.activity" v-bind:disabled="user.type == constants.ADVISOR_TYPE">
                 <option value="0" selected>Atendimento</option>
                 <option value="1">Preparação</option>
                 <option value="2">Elaboração</option>
               </select>
-              <input class="custom-select" v-else v-bind:value="activity(schedule.activity)" readonly>
             </div>
           </div>
         </div>
@@ -57,13 +55,10 @@
               <div class="input-group-prepend">
                 <span class="input-group-text" id="classroomIdSched">Sala</span>
               </div>
-              <input
-                v-model="schedule.classroom_id"
-                type="number"
-                placeholder="Número da sala"
-                class="form-control"
-                v-bind:readonly="user.type == constants.ADVISOR_TYPE"
-              />
+              <select class="custom-select" v-model="schedule.classroom_id" id="classroomIdSched" v-bind:disabled="user.type == constants.ADVISOR_TYPE">
+              <option v-for="c in classrooms"
+                v-bind:key="c.id" v-bind:value="c.id">{{c.name}}</option>
+              </select>
             </div>
           </div>
         </div>
@@ -99,14 +94,6 @@
           <button class="btn btn-outline-danger" @click="aprroveRejectSchedule(false)">Recusar</button>
         </div>
     </div>
-      <!-- <div v-if="!!schedule.id">
-        <br />
-        <div class="row">
-          <div class="col-sm-12">
-            <button class="btn btn-danger">Excluir horário</button>
-          </div>
-        </div>
-      </div> -->
     </div>
     <br />
     <table v-if="ready" class="table table-hover">
@@ -127,7 +114,7 @@
           <td>{{horario.start}}</td>
           <td>{{horario.end}}</td>
           <td>{{schedules_situation(horario.situation)}}</td>
-          <td>{{activity(horario.activity)}}</td>
+          <td>{{activity_type(horario.activity)}}</td>
           <td>{{horario.observation ? horario.observation : ""}}</td>
           <td v-if="!!user">
             <button v-if="horario.situation == 0 || (user.type == constants.MONITOR_TYPE && horario.situation != 2)" @click="editSchedule(horario)" class="btn btn-secondary">Editar</button>
@@ -155,6 +142,7 @@ export default {
       showEdit: false,
       saveButtonTitle: "",
       schedule: {},
+      classrooms: {},
       user: this.userData
     };
   },
@@ -167,6 +155,8 @@ export default {
     },
     aprroveRejectSchedule(approved) {
       this.schedule.situation = approved ? "1" : "2";
+      this.schedule.activity += "";
+      this.schedule.week_day += "";
       this.saveActualSchedule();
       this.toggleEdition(false);
     },
@@ -276,7 +266,7 @@ export default {
           return "Outro";
       }
     },
-    activity: function(type) {
+    activity_type: function(type) {
       switch (type) {
         case 0:
           return "Atendimento";
@@ -304,6 +294,13 @@ export default {
           return "Sábado";
       }
     }
+  },
+  created() {
+    this.load(true);
+    this.api.get2('classrooms')
+    .then((data) => this.classrooms = data.data.status)
+    .catch((err) => this.toast(2, 'Erro ao carregar dados!'))
+    .finally(() => this.load(false));
   }
 };
 </script>

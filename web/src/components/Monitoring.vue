@@ -42,7 +42,10 @@
                             <li class="list-group-item">
                                 <div class="form-group row">
                                     <label class="col-5 col-form-label" for="subjectMonitoringInput">Disciplina</label>
-                                    <input id="subjectMonitoringInput" type="number" class="col-7 col-form-label-plaintext" v-model="monitoring.subject_id" >
+                                    <select class="col-7 custom-select" v-model="monitoring.subject_id" id="subjectMonitoringInput">
+                                    <option v-for="s in subjects"
+                                        v-bind:key="s.id" v-bind:value="s.id">{{s.name}}</option>
+                                    </select>
                                 </div>
                             </li>
 
@@ -98,6 +101,7 @@ export default {
             loading: false,
             students: {},
             professors: {},
+            subjects: {},
             fb: this.parentData
         }
     },
@@ -199,36 +203,30 @@ export default {
                 $('#volunteerMonitoringInput').addClass('active');
             }
         },
-        searchStudent() {
-            this.load(true);
-            this.api.get2('student/')
-                .then((r) => {
-                    this.students = r.data.status;
-                })
-                .catch((err) => {
-                    //
-                })
-                .finally(() => {
-                    this.searchProfessor();
-                    //this.load(false);
-                });
+        searchStudents() {
+            return this.api.get2('student/');
         },
-        searchProfessor() {
-            // this.load(true);
-            this.api.get2('professor/')
-                .then((r) => {
-                    this.professors = r.data.status;
-                })
-                .catch((err) => {
-                    //
-                })
-                .finally(() => {
-                    this.load(false);
-                });
+        searchProfessors() {
+            return this.api.get2('professor/');
+        },
+        searchSubjects() {
+            return this.api.get2('subjects');
         }
     },
     created() {
-        this.searchStudent();
+        this.load(true);
+        Promise.all([
+            this.searchStudents(),
+            this.searchProfessors(),
+            this.searchSubjects()
+        ])
+        .then(data => {
+            this.students = data[0].data.status;
+            this.professors = data[1].data.status;
+            this.subjects = data[2].data.status;
+        })
+        .catch(err => this.toast(2, 'Erro ao carregar dados!'))
+        .finally(() => this.load(false));
     }
 }
 </script>
