@@ -93,8 +93,24 @@ const generalRoutes = (app, api) => {
     });
 
     app.get('/attendance/from/frequency/:id', (req, res) => {
+        var attendances;
+        var people;
         api.getFromMonitoring('/attendance/by/frequency/' + req.params.id)
-            .then((data) => res.send(data))
+            .then((data) => {
+                attendances = data;
+                people = [...new Set(attendances.status.map(x => x.person_id))];
+                return Promise.all(people.map(el => api.getFromInstitution('/person/get/' + el)));
+            })
+            .then((data) => {
+                let peep = [];
+                for (let index = 0; index < data.length; index++) {
+                    peep.push(data[index].status[0]);
+                }
+                attendances.status.forEach(el => {
+                    el.person_name = peep.filter(p => el.person_id == p.id)[0].name;
+                });
+                res.send(attendances);
+            })
             .catch((err) => res.send(err));
     });
 

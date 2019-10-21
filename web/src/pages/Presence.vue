@@ -11,7 +11,7 @@
       <div v-for="i in calendar.length" v-bind:key="i" class="row no-gutters fixed-min-width">
         <work-day v-for="j in calendar[i-1]" v-bind:key="j[0].actual_date" :dayRef="j"
         :month="refMonth.getMonth()" :isUserMonitor="user.type == c.MONITOR_TYPE" class="col"
-        :horarios="horarios" v-on:load="load" v-on:toast="toast" v-on:reload-frequency="getFrequency"></work-day>
+        :horarios="horarios" :classrooms="classrooms" v-on:load="load" v-on:toast="toast" v-on:reload-frequency="getFrequency"></work-day>
       </div>
     </div>
   </div>
@@ -42,7 +42,8 @@ export default {
       refMonth: null,
       nameMonth: '',
       calendar: [],
-      dt: new DT()
+      dt: new DT(),
+      classrooms: {}
     };
   },
   methods: {
@@ -242,6 +243,9 @@ export default {
     }
   },
   created() {
+    this.api.get2('classrooms')
+    .then((data) => this.classrooms = data.data.status)
+    .catch((err) => this.toast(2, 'Erro ao carregar dados!'));
     this.refMonth = new Date();
     this.getMonth();
     this.getFrequency();

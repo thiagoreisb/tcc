@@ -34,7 +34,14 @@
                           <div class="input-group-prepend">
                             <span class="input-group-text" id="classroomFreq">Sala</span>
                           </div>
-                          <input type="number" class="form-control" placeholder="Número da sala" v-model="value.classroom_id" :readonly="!isMonitor || !!value.id">
+                          <select class="custom-select" v-model="value.classroom_id" v-bind:disabled="!isMonitor || !!value.id">
+                            <option
+                              v-for="c in classroomsList"
+                              v-bind:key="c.id"
+                              v-bind:value="c.id">
+                              {{c.name}}
+                            </option>
+                          </select>
                         </div>
                     </div>
 
@@ -96,7 +103,8 @@ export default {
     horarios: null,
     dayRef: null,
     month: null,
-    isUserMonitor: null
+    isUserMonitor: null,
+    classrooms: {}
   },
   data() {
     return {
@@ -112,7 +120,8 @@ export default {
       attendances: {},
       isMonitor: this.isUserMonitor,
       dt: new DT(),
-      freq_id: null
+      freq_id: null,
+      classroomsList: [...this.classrooms]
     };
   },
   methods: {
