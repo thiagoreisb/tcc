@@ -5,6 +5,12 @@ const generalRoutes = (app, api) => {
         res.send({'status':'Welcome to the API!'});
     });
 
+    app.get('/courses', (req, res) => {
+        api.getFromInstitution('/course/all')
+            .then((data) => res.send(data))
+            .catch((err) => res.send(err));
+    });
+
     app.get('/classrooms', (req, res) => {
         api.getFromInstitution('/classroom/all')
             .then((data) => res.send(data))
