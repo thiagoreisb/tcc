@@ -70,6 +70,15 @@
                   </select>
                 </div>
               </div>
+              <!-- Data de Ingresso -->
+              <div class="form-group row" v-if="newUser.type != undefined && newUser.type != 1">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="newUserAdmissionDateInput">Data de Ingresso</span>
+                  </div>
+                  <input type="date" class="form-control" v-model="admissionDate">
+                </div>
+              </div>
 
             </div>
 
@@ -111,6 +120,7 @@ export default {
       newUser: {},
       courses: {},
       id_course: null,
+      admissionDate: null,
       fb: FB,
       fb2: {}
     }
@@ -143,14 +153,44 @@ export default {
           var firebaseUid;  /// Firebase new user's ID
           var systemID;     /// System new user's ID
           this.load(true);
+          /// First, it tries to create a new user in Firebase
           _this.fb2.auth().createUserWithEmailAndPassword(this.newUser.email, this.newUser.password)
           .then((firebaseUser) => {
-            return _this.fb.database().ref('/roles/' + firebaseUser.user.uid).set({
-              id: '100',
+            firebaseUid = firebaseUser.user.uid;
+
+            /// Second, It adds new user to the system database
+            let entity = {
+              name: _this.newUser.name,
+              email: _this.newUser.email,
+              type: '' + _this.newUser.type
+            }
+
+            return _this.api.post('new/user', entity);
+          })
+          .then((data) => {
+            systemID = data.data.status[0].id;
+            
+            /// Third, checks the new user's type
+            if (_this.newUser.type == 1) {  // Professor
+              return Promise.resolve(1);    // Just jump to next then
+            } else {
+              // It's a student, needs to insert into a course
+              let entity = {
+                id_course: _this.id_course,
+                id_person: systemID,
+                start_date: _this.admissionDate
+              }
+              return _this.api.post('user/new/course', entity);
+            }
+          })
+          .then((data) => {
+            /// Finally creates new role for it in firebase
+            return _this.fb.database().ref('/roles/' + firebaseUid).set({
+              id: systemID,
               type: _this.newUser.type
             });
           })
-          .then((firebaseUser) => {
+          .then((data) => {
             this.toast(1, 'Usuário criado com sucesso!')
             this.fb2.auth().signOut();
             this.cleanFields();
