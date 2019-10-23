@@ -25,6 +25,7 @@ require('./routes/classroomRoutes')(app, crud);
 require('./routes/courseRoutes')(app, crud);
 require('./routes/departmentRoutes')(app, crud);
 require('./routes/subjectRoutes')(app, crud);
+require('./routes/course_personRoutes')(app, crud);
 
 // start server on port 3000 locally
 app.listen(process.env.PORT || 3000, () => {

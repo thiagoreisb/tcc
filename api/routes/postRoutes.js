@@ -1,6 +1,18 @@
 'use strict';
 
 const postRoutes = (app, api) => {
+    app.post('/new/user', (req, res) => {
+        api.postInstitution('/person/save', req.body)
+            .then(r => res.send(r))
+            .catch(err => res.send(err));
+    });
+
+    app.post('/user/new/course', (req, res) => {
+        api.postInstitution('/course_person/save', req.body)
+            .then(r => res.send(r))
+            .catch(err => res.send(err));
+    });
+
     app.post('/new/attendance', (req, res) => {
         api.postMonitoring('/attendance/save', req.body)
             .then((r) => res.send(r))

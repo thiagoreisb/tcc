@@ -74,6 +74,40 @@ class Crud {
     }
 
     /**
+     * Inserts data into a table as per the entity
+     * @function
+     * @param {Object} newRecord Instantiated entity
+     * @param {function} cb Callback function
+     */
+    insertData(newRecord, cb) {
+        let table = newRecord.getTable();
+        let props = '';
+        let insert = '';
+        let count = 1;
+        let newValues = [];
+        let propsArray = Object.getOwnPropertyNames(newRecord);
+        
+        propsArray.forEach(
+            function(val) {
+                props += '"' + val + '",';
+                insert += '$' + count + ',';
+                count++;
+                newValues.push(newRecord[val] || null);
+            }
+        );
+
+        // Removes the burrs at the end
+        props = props.substr(0, props.length - 1);
+        insert = insert.substr(0, insert.length - 1);
+
+        // Constructs the query
+        let query = `insert into ${table} (${props}) values (${insert}) returning *;`;
+        
+        // Executes the query with the proper values
+        db.exec(query, newValues, cb);
+    }
+
+    /**
      * Updates an entity
      * @function
      * @param {Object} newRecord Instantiated entity

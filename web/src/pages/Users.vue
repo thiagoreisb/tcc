@@ -139,6 +139,24 @@ export default {
         if (this.newUser.password !== this.newUser.passwordCheck) {
           this.toast(3, 'Senhas devem ser iguais!')
         } else {
+          var _this = this;
+          var firebaseUid;  /// Firebase new user's ID
+          var systemID;     /// System new user's ID
+          this.load(true);
+          _this.fb2.auth().createUserWithEmailAndPassword(this.newUser.email, this.newUser.password)
+          .then((firebaseUser) => {
+            return _this.fb.database().ref('/roles/' + firebaseUser.user.uid).set({
+              id: '100',
+              type: _this.newUser.type
+            });
+          })
+          .then((firebaseUser) => {
+            this.toast(1, 'Usuário criado com sucesso!')
+            this.fb2.auth().signOut();
+            this.cleanFields();
+          })
+          .catch((error) => this.toast(2, 'Erro ao criar usuário!\nErro: ' + error.message))
+          .finally(() => this.load(false));
         }
       } else {
         this.toast(2, "Preencha todos os campos corretamente!");
