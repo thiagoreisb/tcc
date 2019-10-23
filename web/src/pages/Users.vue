@@ -204,12 +204,15 @@ export default {
     },
     cleanFields: function () {
       this.newUser = {};
+      this.admissionDate = null;
+      this.id_course = null;
     },
     isDataRight: function() {
       if (this.isNullOrEmpty(this.newUser.name) || this.isNullOrEmpty(this.newUser.email) ||
           this.isNullOrEmpty(this.newUser.type) || (this.newUser.type != 1 && this.isNullOrEmpty(this.id_course)) ||
           (!this.isNullOrEmpty(this.newUser.email) && !this.validateEmail(this.newUser.email)) ||
-          this.isNullOrEmpty(this.newUser.password) || this.isNullOrEmpty(this.newUser.passwordCheck)){
+          this.isNullOrEmpty(this.newUser.password) || this.isNullOrEmpty(this.newUser.passwordCheck) ||
+          (this.newUser.type != 1 && this.isNullOrEmpty(this.admissionDate))){
         return false;
       }
       return true;

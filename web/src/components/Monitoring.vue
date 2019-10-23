@@ -63,7 +63,7 @@
                                 <div class="form-group row">
                                     <label class="col-5 col-form-label" for="advisorMonitoringInput">Professor</label>
                                     <select class="col-7 custom-select" v-model="monitoring.advisor_id" id="advisorMonitoringInput">
-                                    <option v-for="p in getProfessors"
+                                    <option v-for="p in professors"
                                         v-bind:key="p.id" v-bind:value="p.id">{{p.name}}</option>
                                     </select>
                                 </div>
@@ -100,7 +100,7 @@ export default {
             constants: constants,
             loading: false,
             students: {},
-            professors: {},
+            professors: [],
             subjects: {},
             fb: this.parentData
         }
@@ -110,13 +110,6 @@ export default {
         getStudents: function() {
             if (Array.isArray(this.students) && this.students.length) {
                 return this.students.filter(x => !x.contract_id);
-            }
-            return [];
-        },
-        // Get only professors that aren't advisors
-        getProfessors: function() {
-            if (Array.isArray(this.professors) && this.professors.length) {
-                return this.professors.filter(x => !x.contract_id);
             }
             return [];
         }
@@ -215,14 +208,26 @@ export default {
     },
     created() {
         this.load(true);
+        var _this = this;
+
         Promise.all([
             this.searchStudents(),
             this.searchProfessors(),
-            this.searchSubjects()
+            this.searchSubjects(),
+            this.fb.database().ref('/roles/').once('value')
         ])
         .then(data => {
+            let snap = data[3];
+            let p = data[1].data.status;
+            let profs = [];
+
+            snap.forEach(function(childSnap) {
+                let aux = p.filter(el => childSnap.val().id == el.id && parseInt(childSnap.val().type) == _this.constants.PROFESSOR_TYPE);
+                
+                if (Array.isArray(aux) && aux.length) profs.push(aux[0]);
+            });
             this.students = data[0].data.status;
-            this.professors = data[1].data.status;
+            this.professors = profs;
             this.subjects = data[2].data.status;
         })
         .catch(err => this.toast(2, 'Erro ao carregar dados!'))
